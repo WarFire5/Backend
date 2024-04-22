@@ -44,9 +44,14 @@ public class UsersController : Controller
     }
 
     [HttpPost]
-    public Guid CreateUser(object request)
+    public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
     {
-        return Guid.NewGuid();
+        if (userName != null && password != null && email != null && age > 0)
+        {
+            return Ok(_usersService.CreateUser(userName, password, email, age));
+        }
+
+        return BadRequest();
     }
 
     [HttpPut("{id}")]
@@ -58,15 +63,17 @@ public class UsersController : Controller
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
-        try
-        {
-            _usersService.DeleteUserById(id);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-        return NoContent();
+        //try
+        //{
+        //    _usersService.DeleteUserById(id);
+        //}
+        //catch (Exception ex)
+        //{
+        //    return NotFound(ex.Message);
+        //}
+
+        _usersService.DeleteUserById(id);
+        return Ok();
     }
 
     // api/users/42/devices

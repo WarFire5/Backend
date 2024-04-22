@@ -24,6 +24,21 @@ public class UsersService : IUsersService
         return _usersRepository.GetUserById(id);
     }
 
+    public Guid CreateUser(string userName, string password, string email, int age)
+    {
+        UserDto user = new UserDto()
+        {
+            Id = Guid.NewGuid(),
+            UserName = userName,
+            Password = password,
+            Email = email,
+            Age = age,
+            Devices = new List<DeviceDto>()
+        };
+
+        return _usersRepository.CreateUser(user);
+    }
+
     public void DeleteUserById(Guid id)
     {
         var user = _usersRepository.GetUserById(id);
@@ -32,6 +47,6 @@ public class UsersService : IUsersService
             throw new NotFoundException($"Юзер с Id {id} не найден");
         }
 
-        //_usersRepository.DeleteUserById();
+        _usersRepository.DeleteUserById(user);
     }
 }
