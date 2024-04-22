@@ -12,7 +12,6 @@ class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
         builder.Services.ConfigureApiServices();
         builder.Services.ConfigureBllServices();
         builder.Services.ConfigureDataBase(builder.Configuration);

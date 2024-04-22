@@ -63,15 +63,6 @@ public class UsersController : Controller
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
-        //try
-        //{
-        //    _usersService.DeleteUserById(id);
-        //}
-        //catch (Exception ex)
-        //{
-        //    return NotFound(ex.Message);
-        //}
-
         _usersService.DeleteUserById(id);
         return Ok();
     }

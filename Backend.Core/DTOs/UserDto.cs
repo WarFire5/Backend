@@ -7,4 +7,5 @@ public class UserDto : IdContainer
     public string Email { get; set; }
     public int Age { get; set; }
     public List<DeviceDto> Devices { get; set; }
+    public List<CoinDto> Coins { get; set; }
 }
