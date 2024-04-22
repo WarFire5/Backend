@@ -1,6 +1,7 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace BackendAPI.Controllers;
 
@@ -40,6 +41,7 @@ public class UsersController : Controller
     [HttpGet("{id}")]
     public UserDto GetUserById(Guid id)
     {
+        Log.Information($"Получаем юзера по айди {id}");
         return _usersService.GetUserById(Guid.NewGuid());
     }
 

@@ -5,6 +5,8 @@ namespace Backend.Business.Services
     public interface IDevicesService
     {
         DeviceDto GetDeviceById(Guid id);
-        DeviceDto GetDeviceByOwnerId(Guid ownerId);
+        DeviceDto GetDeviceByOwnerId(Guid ownerId); 
+        Guid CreateDevice(string deviceName, string address, Guid userId);
+        void DeleteDeviceById(Guid id);
     }
 }

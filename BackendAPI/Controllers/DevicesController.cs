@@ -48,4 +48,23 @@ public class DevicesController : Controller
     {
         return _devicesService.GetDeviceByOwnerId(ownerId);
     }
+
+    [HttpPost]
+    public ActionResult<Guid> CreateDevice(string deviceName, string address, Guid userId)
+    {
+
+        if (deviceName != null && address != null)
+        {
+            return Ok(_devicesService.CreateDevice(deviceName, address, userId));
+        }
+
+        return BadRequest();
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult DeleteDeviceById(Guid id)
+    {
+        _devicesService.DeleteDeviceById(id);
+        return Ok();
+    }
 }

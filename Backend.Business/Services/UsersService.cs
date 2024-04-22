@@ -33,7 +33,8 @@ public class UsersService : IUsersService
             Password = password,
             Email = email,
             Age = age,
-            Devices = new List<DeviceDto>()
+            Devices = new List<DeviceDto>(),
+            Coins = new List<CoinDto>()
         };
 
         return _usersRepository.CreateUser(user);

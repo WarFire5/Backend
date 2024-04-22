@@ -6,7 +6,6 @@ public interface IUsersRepository
 {
     UserDto GetUserById(Guid id);
     List<UserDto> GetUsers();
-    public void DeleteUserById(UserDto user);
-    public Guid CreateUser(UserDto user);
-
+    Guid CreateUser(UserDto user);
+    void DeleteUserById(UserDto user);
 }
