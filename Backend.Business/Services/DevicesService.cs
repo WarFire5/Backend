@@ -18,13 +18,13 @@ public class DevicesService : IDevicesService
     public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);
     public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _devicesRepository.GetDeviceByOwnerId(ownerId);
 
-    public Guid CreateDevice(string deviceName, string address, Guid userId)
+    public Guid CreateDevice(string deviceName, string address, Guid ownerId)
     {
-        var user = _usersRepository.GetUserById(userId);
+        var owner = _usersRepository.GetUserById(ownerId);
 
-        if (user == null)
+        if (owner == null)
         {
-            throw new NotFoundException($"Пользователь с Id {userId} не найден");
+            throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
         }
 
         DeviceDto device = new DeviceDto()
@@ -33,7 +33,7 @@ public class DevicesService : IDevicesService
             DeviceName = deviceName,
             DeviceType = DeviceType.PC,
             Address = address,
-            Owner = user
+            Owner = owner
         };
 
         return _devicesRepository.CreateDevice(device);

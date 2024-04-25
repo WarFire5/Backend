@@ -1,4 +1,4 @@
-//using Backend.API.Configuration;
+using Backend.API.Configuration;
 using Backend.API.Extensions;
 using Backend.Business;
 using Backend.DataLayer;
@@ -23,7 +23,7 @@ try
 
     var app = builder.Build();
 
-    //app.UseMiddleware<ExceptionMiddleware>();
+    app.UseMiddleware<ExceptionMiddleware>();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -33,7 +33,7 @@ try
     }
 
     app.UseHttpsRedirection();
-    //app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging();
 
     app.UseAuthorization();
 

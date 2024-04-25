@@ -8,4 +8,5 @@ public interface IUsersService
     List<UserDto> GetUsers();
     Guid CreateUser(string userName, string password, string email, int age);
     void DeleteUserById(Guid id);
+    Guid AddUser(UserDto user);
 }

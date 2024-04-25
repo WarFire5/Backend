@@ -1,15 +1,31 @@
 ﻿using Backend.Core.DTOs;
 using Backend.Core.Exceptions;
 using Backend.DataLayer.Repositories;
+using Serilog;
 
 namespace Backend.Business.Services;
 
 public class UsersService : IUsersService
 {
     private readonly IUsersRepository _usersRepository;
+    private readonly ILogger _logger = Log.ForContext<UsersService>();
+
     public UsersService(IUsersRepository usersRepository)
     {
         _usersRepository = usersRepository;
+    }
+
+    public Guid AddUser(UserDto user)
+    {
+        if (user.Age <18 || user.Age > 150)
+        {
+            throw new ValidationException("Возраст указан некорректно.");
+        }
+        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
+        {
+            throw new ValidationException("Что-то не так с паролем.");
+        }
+        return Guid.NewGuid();
     }
 
     public List<UserDto> GetUsers()

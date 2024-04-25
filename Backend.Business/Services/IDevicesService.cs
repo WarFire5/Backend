@@ -6,7 +6,7 @@ namespace Backend.Business.Services
     {
         DeviceDto GetDeviceById(Guid id);
         DeviceDto GetDeviceByOwnerId(Guid ownerId); 
-        Guid CreateDevice(string deviceName, string address, Guid userId);
+        Guid CreateDevice(string deviceName, string address, Guid ownerId);
         void DeleteDeviceById(Guid id);
     }
 }

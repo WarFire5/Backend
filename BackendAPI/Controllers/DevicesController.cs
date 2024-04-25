@@ -50,12 +50,12 @@ public class DevicesController : Controller
     }
 
     [HttpPost]
-    public ActionResult<Guid> CreateDevice(string deviceName, string address, Guid userId)
+    public ActionResult<Guid> CreateDevice(string deviceName, string address, Guid ownerId)
     {
 
         if (deviceName != null && address != null)
         {
-            return Ok(_devicesService.CreateDevice(deviceName, address, userId));
+            return Ok(_devicesService.CreateDevice(deviceName, address, ownerId));
         }
 
         return BadRequest();

@@ -1,5 +1,8 @@
-﻿using Backend.Business.Services;
+﻿using Backend.API.Models.Responses;
+using Backend.API.Models.Requests;
+using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -13,6 +16,7 @@ public class UsersController : Controller
     private const string _author = "Tanushka";
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
+    private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     public UsersController(IUsersService usersService, IDevicesService devicesService)
     {
@@ -33,28 +37,45 @@ public class UsersController : Controller
     }
 
     [HttpGet]
-    public List<UserDto> GetUsers()
+    public ActionResult<List<UserResponse>> GetUsers()
     {
-        return _usersService.GetUsers();
+        _usersService.GetUsers();
+        return Ok(new List<UserResponse>());
     }
 
     [HttpGet("{id}")]
-    public UserDto GetUserById(Guid id)
+    public ActionResult<UserWithDevicesResponse> GetUserById(Guid id)
     {
-        Log.Information($"Получаем юзера по айди {id}");
-        return _usersService.GetUserById(Guid.NewGuid());
+        _logger.Information($"Получаем юзера по айди {id}");
+        _usersService.GetUserById(Guid.NewGuid());
+        return Ok(new UserWithDevicesResponse());
     }
 
     [HttpPost]
-    public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
+    public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        if (userName != null && password != null && email != null && age > 0)
+        _logger.Information($"{request.UserName} {request.Password}");
+        var id = _usersService.AddUser(new()
         {
-            return Ok(_usersService.CreateUser(userName, password, email, age));
-        }
+            UserName = request.UserName,
+            Password = request.Password,
+            Email = request.Email,
+            Age = request.Age,
+        });
 
-        return BadRequest();
+        return Ok(id);
     }
+
+    //[HttpPost]
+    //public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
+    //{
+    //    if (userName != null && password != null && email != null && age > 0)
+    //    {
+    //        return Ok(_usersService.CreateUser(userName, password, email, age));
+    //    }
+
+    //    return BadRequest();
+    //}
 
     [HttpPut("{id}")]
     public ActionResult UpdateUser([FromRoute] Guid id, [FromBody] object request)
