@@ -1,9 +1,11 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("/api/devices")]
 
