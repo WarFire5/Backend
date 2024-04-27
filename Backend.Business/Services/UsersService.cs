@@ -15,18 +15,18 @@ public class UsersService : IUsersService
         _usersRepository = usersRepository;
     }
 
-    public Guid AddUser(UserDto user)
-    {
-        if (user.Age <18 || user.Age > 150)
-        {
-            throw new ValidationException("Возраст указан некорректно.");
-        }
-        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
-        {
-            throw new ValidationException("Что-то не так с паролем.");
-        }
-        return Guid.NewGuid();
-    }
+    //public Guid AddUser(UserDto user)
+    //{
+    //    if (user.Age <18 || user.Age > 150)
+    //    {
+    //        throw new ValidationException("Возраст указан некорректно.");
+    //    }
+    //    if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
+    //    {
+    //        throw new ValidationException("Что-то не так с паролем.");
+    //    }
+    //    return Guid.NewGuid();
+    //}
 
     public List<UserDto> GetUsers()
     {

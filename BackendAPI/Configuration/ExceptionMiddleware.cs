@@ -1,6 +1,6 @@
-﻿using Serilog;
+﻿using Backend.Core.Exceptions;
+using Serilog;
 using System.Net;
-using Backend.Core.Exceptions;
 
 namespace Backend.API.Configuration;
 
