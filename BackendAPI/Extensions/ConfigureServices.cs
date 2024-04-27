@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Backend.Core.Models.Coins;
+using Backend.Core.Models.Devices;
+using Backend.Core.Models.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -32,5 +35,6 @@ public static class ConfigureServices
         services.AddEndpointsApiExplorer();
         services.AddSwagger();
         services.ConfigureDataBase(configurationManager);
+        services.AddAutoMapper(typeof(UsersMappingProfile), typeof(DevicesMappingProfile), typeof(CoinsMappingProfile));
     }
 }

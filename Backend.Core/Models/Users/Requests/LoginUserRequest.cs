@@ -1,4 +1,4 @@
-﻿namespace Backend.API.Models.Requests;
+﻿namespace Backend.Core.Models.Users.Requests;
 
 public class LoginUserRequest
 {

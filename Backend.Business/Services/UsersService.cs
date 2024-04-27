@@ -1,5 +1,7 @@
-﻿using Backend.Core.DTOs;
+﻿using AutoMapper;
+using Backend.Core.DTOs;
 using Backend.Core.Exceptions;
+using Backend.Core.Models.Users.Requests;
 using Backend.DataLayer.Repositories;
 using Serilog;
 
@@ -9,24 +11,28 @@ public class UsersService : IUsersService
 {
     private readonly IUsersRepository _usersRepository;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
+    private readonly IMapper _mapper;
 
-    public UsersService(IUsersRepository usersRepository)
+    public UsersService(IUsersRepository usersRepository, IMapper mapper)
     {
         _usersRepository = usersRepository;
+        _mapper = mapper;
     }
 
-    //public Guid AddUser(UserDto user)
-    //{
-    //    if (user.Age <18 || user.Age > 150)
-    //    {
-    //        throw new ValidationException("Возраст указан некорректно.");
-    //    }
-    //    if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
-    //    {
-    //        throw new ValidationException("Что-то не так с паролем.");
-    //    }
-    //    return Guid.NewGuid();
-    //}
+    public Guid AddUser(CreateUserRequest request)
+    {
+        //if (user.Age < 18 || user.Age > 150)
+        //{
+        //    throw new ValidationException("Возраст указан некорректно.");
+        //}
+        //if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
+        //{
+        //    throw new ValidationException("Что-то не так с паролем.");
+        //}
+
+        var user = _mapper.Map<UserDto>(request);
+        return _usersRepository.CreateUser(user);
+    }
 
     public List<UserDto> GetUsers()
     {
@@ -40,20 +46,34 @@ public class UsersService : IUsersService
         return _usersRepository.GetUserById(id);
     }
 
-    public Guid CreateUser(string userName, string password, string email, int age)
-    {
-        UserDto user = new UserDto()
-        {
-            Id = Guid.NewGuid(),
-            UserName = userName,
-            Password = password,
-            Email = email,
-            Age = age,
-            Devices = new List<DeviceDto>(),
-            Coins = new List<CoinDto>()
-        };
+    //public Guid CreateUser(string userName, string password, string email, int age)
+    //{
+    //    UserDto user = new UserDto()
+    //    {
+    //        Id = Guid.NewGuid(),
+    //        UserName = userName,
+    //        Password = password,
+    //        Email = email,
+    //        Age = age,
+    //        Devices = new List<DeviceDto>(),
+    //        Coins = new List<CoinDto>()
+    //    };
 
-        return _usersRepository.CreateUser(user);
+    //    return _usersRepository.CreateUser(user);
+    //}
+
+    public void UpdateUser(UpdateUserRequest request)
+    {
+        var user = _usersRepository.GetUserById(request.Id);
+        if (user is null)
+        {
+            throw new NotFoundException($"Юзер с Id {request.Id} не найден");
+        }
+        user.UserName = request.UserName;
+        user.Email = request.Email;
+        user.Age = request.Age;
+
+        _usersRepository.UpdateUser(user);
     }
 
     public void DeleteUserById(Guid id)

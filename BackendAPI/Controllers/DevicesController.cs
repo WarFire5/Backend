@@ -20,7 +20,7 @@ public class DevicesController : Controller
 
     // api/devices
     [HttpGet()]
-    public ActionResult <List<DeviceDto>> GetDevice([FromQuery] Guid? ownerId, [FromQuery] Guid? id)
+    public ActionResult<List<DeviceDto>> GetDevice([FromQuery] Guid? ownerId, [FromQuery] Guid? id)
     {
         if (ownerId is not null)
         {

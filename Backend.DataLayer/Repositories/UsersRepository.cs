@@ -29,6 +29,11 @@ public class UsersRepository : BaseRepository, IUsersRepository
 
         return user.Id;
     }
+    public void UpdateUser(UserDto user)
+    {
+        _ctx.Users.Update(user);
+        _ctx.SaveChanges();
+    }
 
     public void DeleteUserById(UserDto user)
     {

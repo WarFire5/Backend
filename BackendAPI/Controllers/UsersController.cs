@@ -1,7 +1,7 @@
-﻿using Backend.API.Models.Requests;
-using Backend.API.Models.Responses;
-using Backend.Business.Services;
+﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Backend.Core.Models.Users.Requests;
+using Backend.Core.Models.Users.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -20,12 +20,14 @@ public class UsersController : Controller
     private const string _author = "Tanushka";
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
+    private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
-    public UsersController(IUsersService usersService, IDevicesService devicesService)
+    public UsersController(IUsersService usersService, IDevicesService devicesService, ICoinsService coinsService)
     {
         _usersService = usersService;
         _devicesService = devicesService;
+        _coinsService = coinsService;
     }
 
     [HttpGet("author")]
@@ -57,31 +59,31 @@ public class UsersController : Controller
         return Ok(new UserWithDevicesResponse());
     }
 
-    //[HttpPost]
-    //public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
-    //{
-    //    _logger.Information($"{request.UserName} {request.Password}");
-    //    var id = _usersService.AddUser(new()
-    //    {
-    //        UserName = request.UserName,
-    //        Password = request.Password,
-    //        Email = request.Email,
-    //        Age = request.Age,
-    //    });
-
-    //    return Ok(id);
-    //}
-
     [HttpPost]
-    public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
+    public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
     {
-        if (userName != null && password != null && email != null && age > 18 && age < 150)
-        {
-            return Ok(_usersService.CreateUser(userName, password, email, age));
-        }
+        _logger.Information($"{request.UserName} {request.Password}");
+        //var id = _usersService.AddUser(new()
+        //{
+        //    UserName = request.UserName,
+        //    Password = request.Password,
+        //    Email = request.Email,
+        //    Age = request.Age,
+        //});
 
-        return BadRequest();
+        return Ok(_usersService.AddUser(request));
     }
+
+    //[HttpPost]
+    //public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
+    //{
+    //    if (userName != null && password != null && email != null && age > 18 && age < 150)
+    //    {
+    //        return Ok(_usersService.CreateUser(userName, password, email, age));
+    //    }
+
+    //    return BadRequest();
+    //}
 
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest user)
@@ -108,10 +110,12 @@ public class UsersController : Controller
         return Unauthorized();
     }
 
-    [HttpPut("{id}")]
-    public ActionResult UpdateUser([FromRoute] Guid id, [FromBody] object request)
+    [HttpPut]
+    public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
-        return NoContent();
+        _logger.Information($"{request.Id} {request.UserName}");
+        _usersService.UpdateUser(request);
+        return Ok();
     }
 
     [HttpDelete("{id}")]
@@ -126,5 +130,12 @@ public class UsersController : Controller
     public DeviceDto GetDeviceByOwnerId(Guid ownerId)
     {
         return _devicesService.GetDeviceByOwnerId(ownerId);
+    }
+
+    // api/users/42/coins
+    [HttpGet("{ownerId}/coins")]
+    public CoinDto GetCoinByOwnerId(Guid ownerId)
+    {
+        return _coinsService.GetCoinByOwnerId(ownerId);
     }
 }

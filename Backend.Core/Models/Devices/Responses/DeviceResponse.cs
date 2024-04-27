@@ -1,7 +1,6 @@
-﻿using Backend.Core.DTOs;
-using Backend.Core.Enums;
+﻿using Backend.Core.Enums;
 
-namespace Backend.API.Models.Responses;
+namespace Backend.Core.Models.Devices.Responses;
 
 public class DeviceResponse
 {
