@@ -29,7 +29,6 @@ public class DevicesService : IDevicesService
 
         DeviceDto device = new DeviceDto()
         {
-            Id = Guid.NewGuid(),
             DeviceName = deviceName,
             DeviceType = DeviceType.PC,
             Address = address,

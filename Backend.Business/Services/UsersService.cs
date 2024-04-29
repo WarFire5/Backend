@@ -39,7 +39,6 @@ public class UsersService : IUsersService
         //}
 
         var user = _mapper.Map<UserDto>(request);
-        user.Id = Guid.NewGuid();
         user.PasswordSalt = PasswordHasher.GenerateSalt();
         user.PasswordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
 
