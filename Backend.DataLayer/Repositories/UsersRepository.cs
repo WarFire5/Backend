@@ -40,4 +40,10 @@ public class UsersRepository : BaseRepository, IUsersRepository
         _ctx.Users.Remove(user);
         _ctx.SaveChanges();
     }
+
+    public UserDto GetUserByUserName(string userName)
+    {
+        var user = _ctx.Users.FirstOrDefault(u => u.UserName == userName);
+        return user;
+    }
 }

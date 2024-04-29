@@ -2,8 +2,14 @@
 using Backend.Core.DTOs;
 using Backend.Core.Exceptions;
 using Backend.Core.Models.Users.Requests;
+using Backend.Core.Models.Users.Responses;
 using Backend.DataLayer.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
+using System.Security.Claims;
+using System.Text;
 
 namespace Backend.Business.Services;
 
@@ -12,6 +18,8 @@ public class UsersService : IUsersService
     private readonly IUsersRepository _usersRepository;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
     private readonly IMapper _mapper;
+    private const string pepper = "5_555_5";
+    private const int iteration = 5;
 
     public UsersService(IUsersRepository usersRepository, IMapper mapper)
     {
@@ -31,6 +39,10 @@ public class UsersService : IUsersService
         //}
 
         var user = _mapper.Map<UserDto>(request);
+        user.Id = Guid.NewGuid();
+        user.PasswordSalt = PasswordHasher.GenerateSalt();
+        user.PasswordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
+
         return _usersRepository.CreateUser(user);
     }
 
@@ -61,6 +73,48 @@ public class UsersService : IUsersService
 
     //    return _usersRepository.CreateUser(user);
     //}
+
+    public AuthenticatedResponse Login(LoginUserRequest request)
+    {
+        _logger.Debug($"Ищем пользователя в базе по логину: {request.UserName}");
+        var user = _usersRepository.GetUserByUserName(request.UserName);
+
+
+        if (user == null) throw new NotFoundException("Username or password did not match.");
+
+        if (CheckPassword(request, user))
+        {
+            _logger.Debug($"Выдаём пользователю {request.UserName} токен.");
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Backend_Backend_Backend_superSecretKey@345"));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var tokenOptions = new JwtSecurityToken(
+                issuer: "Backend",
+                audience: "UI",
+                claims: new List<Claim>(),
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: signinCredentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            return new AuthenticatedResponse { Token = tokenString };
+        }
+
+        _logger.Debug($"Пользователь {request.UserName} не найден.");
+        throw new ValidationException("Username or password did not match.");
+    }
+
+    private bool CheckPassword(LoginUserRequest request, UserDto user)
+    {
+        var passwordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
+        if (user.PasswordHash != passwordHash)
+        {
+            Log.Debug($"Пароль пользователя не совпадает: {request.UserName}");
+            throw new AuthenticationException("Username or password did not match.");
+        }
+
+        return true;
+    }
 
     public void UpdateUser(UpdateUserRequest request)
     {

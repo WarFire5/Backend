@@ -9,4 +9,5 @@ public interface IUsersRepository
     Guid CreateUser(UserDto user);
     void UpdateUser(UserDto user);
     void DeleteUserById(UserDto user);
+    UserDto GetUserByUserName(string userName);
 }

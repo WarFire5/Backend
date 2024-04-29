@@ -92,22 +92,8 @@ public class UsersController : Controller
         {
             return BadRequest("Invalid client request");
         }
-        if (user.UserName == "johndoe" && user.Password == "def@123" && user.Email == "def@123")
-        {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Backend_Backend_Backend_superSecretKey@345"));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var tokenOptions = new JwtSecurityToken(
-                issuer: "Backend",
-                audience: "UI",
-                claims: new List<Claim>(),
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: signinCredentials
-            );
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return Ok(new AuthenticatedResponse { Token = tokenString });
-        }
-        return Unauthorized();
+        return Ok(_usersService.Login(user));
     }
 
     [HttpPut]

@@ -9,5 +9,6 @@ public static class ConfigureServices
     {
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IDevicesRepository, DevicesRepository>();
+        services.AddScoped<ICoinsRepository, CoinsRepository>();
     }
 }

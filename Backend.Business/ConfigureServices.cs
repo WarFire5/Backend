@@ -9,5 +9,6 @@ public static class ConfigureServices
     {
         services.AddScoped<IUsersService, UsersService>();
         services.AddScoped<IDevicesService, DevicesService>();
+        services.AddScoped<ICoinsService, CoinsService>();
     }
 }
