@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.DataLayer.Migrations
 {
     [DbContext(typeof(MainerWomanContext))]
-    [Migration("20240429151654_AddPasswordHash&PasswordSalt")]
-    partial class AddPasswordHashPasswordSalt
+    [Migration("20240501152254_AddedColumnsPasswordSaltAndPasswordHash")]
+    partial class AddedColumnsPasswordSaltAndPasswordHash
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,10 @@ namespace Backend.DataLayer.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("text")
                         .HasColumnName("email");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text")
+                        .HasColumnName("password");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text")

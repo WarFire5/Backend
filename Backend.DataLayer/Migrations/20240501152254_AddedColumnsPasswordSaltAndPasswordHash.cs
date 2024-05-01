@@ -5,18 +5,19 @@
 namespace Backend.DataLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class AddPasswordHashPasswordSalt : Migration
+    public partial class AddedColumnsPasswordSaltAndPasswordHash : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "password",
-                table: "users",
-                newName: "password_salt");
-
             migrationBuilder.AddColumn<string>(
                 name: "password_hash",
+                table: "users",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "password_salt",
                 table: "users",
                 type: "text",
                 nullable: true);
@@ -29,10 +30,9 @@ namespace Backend.DataLayer.Migrations
                 name: "password_hash",
                 table: "users");
 
-            migrationBuilder.RenameColumn(
+            migrationBuilder.DropColumn(
                 name: "password_salt",
-                table: "users",
-                newName: "password");
+                table: "users");
         }
     }
 }
