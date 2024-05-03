@@ -6,11 +6,11 @@ namespace Backend.Business.Services;
 
 public interface IUsersService
 {
-    Guid AddUser(CreateUserRequest request);
-    List<UserDto> GetUsers();
+    Guid AddUser(AddUserRequest request);
+    public AuthenticatedResponse Login(LoginUserRequest request);
     UserDto GetUserById(Guid id);
-    //Guid CreateUser(string userName, string password, string email, int age);
+    public UserDto GetUserByUserName(string userName);
+    List<UserDto> GetUsers();
     void UpdateUser(UpdateUserRequest request);
     void DeleteUserById(Guid id);
-    public AuthenticatedResponse Login(LoginUserRequest request);
 }

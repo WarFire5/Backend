@@ -11,24 +11,32 @@ public class UsersRepository : BaseRepository, IUsersRepository
     {
     }
 
-    public List<UserDto> GetUsers()
-    {
-        return _ctx.Users.ToList();
-    }
-
-    public UserDto GetUserById(Guid id)
-    {
-        _logger.Information("Идём в базу данных искать юзера с Id {id}", id);
-        return _ctx.Users.FirstOrDefault(u => u.Id == id);
-    }
-
-    public Guid CreateUser(UserDto user)
+    public Guid AddUser(UserDto user)
     {
         _ctx.Users.Add(user);
         _ctx.SaveChanges();
 
         return user.Id;
     }
+
+    public UserDto GetUserById(Guid id)
+    {
+        _logger.Information("Идём в базу данных искать юзера с Id {id}", id);
+
+        return _ctx.Users.FirstOrDefault(u => u.Id == id);
+    }
+
+    public UserDto GetUserByUserName(string userName)
+    {
+        var user = _ctx.Users.FirstOrDefault(u => u.UserName == userName);
+        return user;
+    }
+
+    public List<UserDto> GetUsers()
+    {
+        return _ctx.Users.ToList();
+    }
+
     public void UpdateUser(UserDto user)
     {
         _ctx.Users.Update(user);
@@ -39,11 +47,5 @@ public class UsersRepository : BaseRepository, IUsersRepository
     {
         _ctx.Users.Remove(user);
         _ctx.SaveChanges();
-    }
-
-    public UserDto GetUserByUserName(string userName)
-    {
-        var user = _ctx.Users.FirstOrDefault(u => u.UserName == userName);
-        return user;
     }
 }

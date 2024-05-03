@@ -18,23 +18,33 @@ public class DevicesController : Controller
         _devicesService = devicesService;
     }
 
-    // api/devices
-    [HttpGet()]
-    public ActionResult<List<DeviceDto>> GetDevice([FromQuery] Guid? ownerId, [FromQuery] Guid? id)
+    [HttpPost]
+    public ActionResult<Guid> AddDevice(string deviceName, string address, Guid ownerId)
     {
-        if (ownerId is not null)
+
+        if (deviceName != null && address != null)
         {
-            return Ok(_devicesService.GetDeviceByOwnerId((Guid)ownerId));
+            return Ok(_devicesService.AddDevice(deviceName, address, ownerId));
         }
+
+        return BadRequest();
+    }
+
+    [HttpGet()]
+    public ActionResult<List<DeviceDto>> GetDevice([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
+    {
         if (id is not null)
         {
             return Ok(_devicesService.GetDeviceById((Guid)id));
+        }
+        if (ownerId is not null)
+        {
+            return Ok(_devicesService.GetDeviceByOwnerId((Guid)ownerId));
         }
 
         return Ok(new List<DeviceDto>());
     }
 
-    // api/devices/42
     [HttpGet("{id}")]
     public ActionResult<DeviceDto> GetDeviceById(Guid id)
     {
@@ -44,23 +54,10 @@ public class DevicesController : Controller
         return Ok(_devicesService.GetDeviceById(id));
     }
 
-    // api/devices/by-owner/42
     [HttpGet("by-owner/{ownerId}")]
     public DeviceDto GetDeviceByOwnerId(Guid ownerId)
     {
         return _devicesService.GetDeviceByOwnerId(ownerId);
-    }
-
-    [HttpPost]
-    public ActionResult<Guid> CreateDevice(string deviceName, string address, Guid ownerId)
-    {
-
-        if (deviceName != null && address != null)
-        {
-            return Ok(_devicesService.CreateDevice(deviceName, address, ownerId));
-        }
-
-        return BadRequest();
     }
 
     [HttpDelete("{id}")]

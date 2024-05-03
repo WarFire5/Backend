@@ -18,23 +18,21 @@ public class CoinsController : Controller
         _coinsService = coinsService;
     }
 
-    // api/coins
     [HttpGet()]
-    public ActionResult<List<CoinDto>> GetCoin([FromQuery] Guid? ownerId, [FromQuery] Guid? id)
+    public ActionResult<List<CoinDto>> GetCoin([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
     {
-        if (ownerId is not null)
-        {
-            return Ok(_coinsService.GetCoinByOwnerId((Guid)ownerId));
-        }
         if (id is not null)
         {
             return Ok(_coinsService.GetCoinById((Guid)id));
+        }
+        if (ownerId is not null)
+        {
+            return Ok(_coinsService.GetCoinByOwnerId((Guid)ownerId));
         }
 
         return Ok(new List<CoinDto>());
     }
 
-    // api/coins/42
     [HttpGet("{id}")]
     public ActionResult<CoinDto> GetCoinById(Guid id)
     {
@@ -44,7 +42,6 @@ public class CoinsController : Controller
         return Ok(_coinsService.GetCoinById(id));
     }
 
-    // api/coins/by-owner/42
     [HttpGet("by-owner/{ownerId}")]
     public CoinDto GetCoinByOwnerId(Guid ownerId)
     {

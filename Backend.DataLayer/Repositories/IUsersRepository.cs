@@ -4,10 +4,10 @@ namespace Backend.DataLayer.Repositories;
 
 public interface IUsersRepository
 {
+    Guid AddUser(UserDto user);
     UserDto GetUserById(Guid id);
+    UserDto GetUserByUserName(string userName);
     List<UserDto> GetUsers();
-    Guid CreateUser(UserDto user);
     void UpdateUser(UserDto user);
     void DeleteUserById(UserDto user);
-    UserDto GetUserByUserName(string userName);
 }

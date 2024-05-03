@@ -1,4 +1,6 @@
 ﻿using Backend.Core.DTOs;
+using Backend.Core.Enums;
+using Backend.Core.Exceptions;
 using Backend.DataLayer.Repositories;
 
 namespace Backend.Business.Services;

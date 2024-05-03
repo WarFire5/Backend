@@ -4,8 +4,8 @@ namespace Backend.DataLayer.Repositories;
 
 public interface IDevicesRepository
 {
+    Guid AddDevice(DeviceDto device);
     DeviceDto GetDeviceById(Guid id);
     DeviceDto GetDeviceByOwnerId(Guid ownerId);
-    Guid CreateDevice(DeviceDto device);
     void DeleteDeviceById(Guid id);
 }

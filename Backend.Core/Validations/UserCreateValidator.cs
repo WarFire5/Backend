@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Backend.Core.Validations;
 
-public class UserCreateValidator : AbstractValidator<CreateUserRequest>
+public class UserCreateValidator : AbstractValidator<AddUserRequest>
 {
     public UserCreateValidator()
     {

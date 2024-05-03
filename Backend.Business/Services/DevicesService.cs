@@ -9,16 +9,14 @@ public class DevicesService : IDevicesService
 {
     private readonly IDevicesRepository _devicesRepository;
     private readonly IUsersRepository _usersRepository;
+
     public DevicesService(IDevicesRepository devicesRepository, IUsersRepository usersRepository)
     {
         _devicesRepository = devicesRepository;
         _usersRepository = usersRepository;
     }
 
-    public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _devicesRepository.GetDeviceByOwnerId(ownerId);
-
-    public Guid CreateDevice(string deviceName, string address, Guid ownerId)
+    public Guid AddDevice(string deviceName, string address, Guid ownerId)
     {
         var owner = _usersRepository.GetUserById(ownerId);
 
@@ -35,8 +33,12 @@ public class DevicesService : IDevicesService
             Owner = owner
         };
 
-        return _devicesRepository.CreateDevice(device);
+        return _devicesRepository.AddDevice(device);
     }
+
+    public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);
+
+    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _devicesRepository.GetDeviceByOwnerId(ownerId);
 
     public void DeleteDeviceById(Guid id)
     {

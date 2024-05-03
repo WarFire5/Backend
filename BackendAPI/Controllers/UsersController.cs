@@ -14,6 +14,7 @@ namespace BackendAPI.Controllers;
 public class UsersController : Controller
 {
     private const string _author = "Tanushka";
+    
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
     private readonly ICoinsService _coinsService;
@@ -32,54 +33,13 @@ public class UsersController : Controller
         return _author;
     }
 
-    [HttpGet("author2")]
-    public string GetAuthor2()
-    {
-        return _author;
-    }
-
-    [Authorize]
-    [HttpGet]
-    public ActionResult<List<UserResponse>> GetUsers()
-    {
-        _usersService.GetUsers();
-        return Ok(new List<UserResponse>());
-    }
-
-    [Authorize]
-    [HttpGet("{id}")]
-    public ActionResult<UserWithDevicesResponse> GetUserById(Guid id)
-    {
-        _logger.Information($"Получаем юзера по айди {id}");
-        _usersService.GetUserById(Guid.NewGuid());
-        return Ok(new UserWithDevicesResponse());
-    }
-
     [HttpPost]
-    public ActionResult<Guid> CreateUser([FromBody] CreateUserRequest request)
+    public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
         _logger.Information($"{request.UserName} {request.Password}");
-        //var id = _usersService.AddUser(new()
-        //{
-        //    UserName = request.UserName,
-        //    Password = request.Password,
-        //    Email = request.Email,
-        //    Age = request.Age,
-        //});
 
         return Ok(_usersService.AddUser(request));
     }
-
-    //[HttpPost]
-    //public ActionResult<Guid> CreateUser(string userName, string password, string email, int age)
-    //{
-    //    if (userName != null && password != null && email != null && age > 18 && age < 150)
-    //    {
-    //        return Ok(_usersService.CreateUser(userName, password, email, age));
-    //    }
-
-    //    return BadRequest();
-    //}
 
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest user)
@@ -92,29 +52,52 @@ public class UsersController : Controller
         return Ok(_usersService.Login(user));
     }
 
+    [Authorize]
+    [HttpGet("{id}")]
+    public ActionResult<UserWithDevicesResponse> GetUserById(Guid id)
+    {
+        _logger.Information($"Получаем юзера по айди {id}");
+        _usersService.GetUserById(Guid.NewGuid());
+
+        return Ok(new UserWithDevicesResponse());
+    }
+
+    [Authorize]
+    [HttpGet]
+    public ActionResult<List<UserResponse>> GetUsers()
+    {
+        _usersService.GetUsers();
+
+        return Ok(new List<UserResponse>());
+    }
+
+    [Authorize]
     [HttpPut]
     public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
         _logger.Information($"{request.Id} {request.UserName}");
         _usersService.UpdateUser(request);
+
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
         _usersService.DeleteUserById(id);
+
         return Ok();
     }
 
-    // api/users/42/devices
+    [Authorize]
     [HttpGet("{ownerId}/devices")]
     public DeviceDto GetDeviceByOwnerId(Guid ownerId)
     {
         return _devicesService.GetDeviceByOwnerId(ownerId);
     }
 
-    // api/users/42/coins
+    [Authorize]
     [HttpGet("{ownerId}/coins")]
     public CoinDto GetCoinByOwnerId(Guid ownerId)
     {

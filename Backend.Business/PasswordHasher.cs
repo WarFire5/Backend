@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Backend.Business.Services;
+namespace Backend.Business;
 
 public static class PasswordHasher
 {
@@ -14,6 +14,7 @@ public static class PasswordHasher
         var byteValue = Encoding.UTF8.GetBytes(passwordSaltPepper);
         var byteHash = sha256.ComputeHash(byteValue);
         var hash = Convert.ToBase64String(byteHash);
+        
         return ComputeHash(hash, salt, pepper, iteration - 1);
     }
 
@@ -23,6 +24,7 @@ public static class PasswordHasher
         var byteSalt = new byte[16];
         rng.GetBytes(byteSalt);
         var salt = Convert.ToBase64String(byteSalt);
+        
         return salt;
     }
 }

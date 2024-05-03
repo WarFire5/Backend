@@ -8,16 +8,17 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
     {
     }
 
-    public DeviceDto GetDeviceById(Guid id) => _ctx.Devices.FirstOrDefault(d => d.Id == id);
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _ctx.Devices.FirstOrDefault(d => d.Owner.Id == ownerId);
-
-    public Guid CreateDevice(DeviceDto device)
+    public Guid AddDevice(DeviceDto device)
     {
         _ctx.Devices.Add(device);
         _ctx.SaveChanges();
 
         return device.Id;
     }
+
+    public DeviceDto GetDeviceById(Guid id) => _ctx.Devices.FirstOrDefault(d => d.Id == id);
+
+    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _ctx.Devices.FirstOrDefault(d => d.Owner.Id == ownerId);
 
     public void DeleteDeviceById(Guid id)
     {
