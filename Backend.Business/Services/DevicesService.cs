@@ -1,7 +1,13 @@
-﻿using Backend.Core.DTOs;
+﻿using AutoMapper;
+using Backend.Core.DTOs;
 using Backend.Core.Enums;
 using Backend.Core.Exceptions;
+using Backend.Core.Models.Devices.Requests;
 using Backend.DataLayer.Repositories;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using ValidationException = Backend.Core.Exceptions.ValidationException;
 
 namespace Backend.Business.Services;
 
@@ -9,30 +15,69 @@ public class DevicesService : IDevicesService
 {
     private readonly IDevicesRepository _devicesRepository;
     private readonly IUsersRepository _usersRepository;
+    private readonly ILogger _logger = Log.ForContext<UsersService>();
+    private readonly IMapper _mapper;
+    private readonly IValidator<AddDeviceRequest> _addDeviceValidator;
 
-    public DevicesService(IDevicesRepository devicesRepository, IUsersRepository usersRepository)
+    public DevicesService(IDevicesRepository devicesRepository, IUsersRepository usersRepository, IMapper mapper, IValidator<AddDeviceRequest> addDeviceValidator)
     {
         _devicesRepository = devicesRepository;
         _usersRepository = usersRepository;
+        _mapper = mapper;
+        _addDeviceValidator = addDeviceValidator;
     }
 
-    public Guid AddDevice(string deviceName, string address, Guid ownerId)
-    {
-        var owner = _usersRepository.GetUserById(ownerId);
+    ////метод для отображения выпадающего списка в свагере
+    //public Guid AddDevice(Guid ownerId, DeviceType deviceType, AddDeviceRequest request)
+    //{
+    //    var validationResult = _addDeviceValidator.Validate(request);
+    //    if (validationResult.IsValid)
+    //    {
+    //        var owner = _usersRepository.GetUserById(ownerId);
 
-        if (owner == null)
+    //        if (owner == null)
+    //        {
+    //            throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
+    //        }
+
+    //        DeviceDto device = new DeviceDto()
+    //        {
+    //            DeviceName = request.DeviceName,
+    //            DeviceType = request.DeviceType,
+    //            Owner = owner
+    //        };
+
+    //        return _devicesRepository.AddDevice(device);
+    //    }
+
+    //    string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
+    //    throw new ValidationException(exceptions);
+    //}
+
+    public Guid AddDevice(Guid ownerId, AddDeviceRequest request)
+    {
+        var validationResult = _addDeviceValidator.Validate(request);
+        if (validationResult.IsValid)
         {
-            throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
+            var owner = _usersRepository.GetUserById(ownerId);
+
+            if (owner == null)
+            {
+                throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
+            }
+
+            DeviceDto device = new DeviceDto()
+            {
+                DeviceName = request.DeviceName,
+                DeviceType = request.DeviceType,
+                Owner = owner
+            };
+
+            return _devicesRepository.AddDevice(device);
         }
 
-        DeviceDto device = new DeviceDto()
-        {
-            DeviceName = deviceName,
-            DeviceType = DeviceType.PC,
-            Owner = owner
-        };
-
-        return _devicesRepository.AddDevice(device);
+        string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
+        throw new ValidationException(exceptions);
     }
 
     public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);

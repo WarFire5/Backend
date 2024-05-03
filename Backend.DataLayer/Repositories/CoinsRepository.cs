@@ -7,5 +7,4 @@ public class CoinsRepository : BaseRepository, ICoinsRepository
     public CoinsRepository(MainerWomanContext context) : base(context)
     {
     }
-
 }

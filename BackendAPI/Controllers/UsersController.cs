@@ -14,7 +14,7 @@ namespace BackendAPI.Controllers;
 public class UsersController : Controller
 {
     private const string _author = "Tanushka";
-    
+
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
     private readonly ICoinsService _coinsService;

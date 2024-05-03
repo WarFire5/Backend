@@ -20,21 +20,21 @@ public class UsersService : IUsersService
     private readonly IUsersRepository _usersRepository;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
     private readonly IMapper _mapper;
-    private readonly IValidator<AddUserRequest> _userCreateValidator;
+    private readonly IValidator<AddUserRequest> _addUserValidator;
 
     private const string pepper = "5_555_5";
     private const int iteration = 5;
 
-    public UsersService(IUsersRepository usersRepository, IMapper mapper, IValidator<AddUserRequest> userCreateValidator)
+    public UsersService(IUsersRepository usersRepository, IMapper mapper, IValidator<AddUserRequest> addUserValidator)
     {
         _usersRepository = usersRepository;
         _mapper = mapper;
-        _userCreateValidator = userCreateValidator;
+        _addUserValidator = addUserValidator;
     }
 
     public Guid AddUser(AddUserRequest request)
     {
-        var validationResult = _userCreateValidator.Validate(request);
+        var validationResult = _addUserValidator.Validate(request);
         if (validationResult.IsValid)
         {
             var user = _mapper.Map<UserDto>(request);
@@ -82,7 +82,7 @@ public class UsersService : IUsersService
         var passwordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
         if (user.PasswordHash != passwordHash)
         {
-            Log.Debug($"Пароль пользователя не совпадает: {request.Login}");
+            Log.Debug($"Пароль пользователя {request.Login} не совпадает.");
             throw new AuthenticationException("Login or password did not match.");
         }
 

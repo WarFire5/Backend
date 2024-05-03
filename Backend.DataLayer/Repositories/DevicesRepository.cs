@@ -1,9 +1,12 @@
 ﻿using Backend.Core.DTOs;
+using Serilog;
 
 namespace Backend.DataLayer.Repositories;
 
 public class DevicesRepository : BaseRepository, IDevicesRepository
 {
+    private readonly ILogger _logger = Log.ForContext<DevicesRepository>();
+
     public DevicesRepository(MainerWomanContext context) : base(context)
     {
     }

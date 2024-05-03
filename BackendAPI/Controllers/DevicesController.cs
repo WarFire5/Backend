@@ -1,37 +1,46 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
-using Microsoft.AspNetCore.Authorization;
+using Backend.Core.Enums;
+using Backend.Core.Models.Devices.Requests;
+using BackendAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Backend.API.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("/api/devices")]
 
 public class DevicesController : Controller
 {
     private readonly IDevicesService _devicesService;
+    private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     public DevicesController(IDevicesService devicesService)
     {
         _devicesService = devicesService;
     }
 
-    [HttpPost]
-    public ActionResult<Guid> AddDevice(string deviceName, string address, Guid ownerId)
+    ////метод для отображения выпадающего списка в свагере
+    //[HttpPost()]
+    //public ActionResult<Guid> AddDevice(Guid ownerId, DeviceType deviceType, [FromBody] AddDeviceRequest request)
+    //{
+    //    _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} пользователя {ownerId}");
+
+    //    return Ok(_devicesService.AddDevice(ownerId, deviceType, request));
+    //}
+
+    [HttpPost("{ownerId}")]
+    public ActionResult<Guid> AddDevice(Guid ownerId, [FromBody] AddDeviceRequest request)
     {
+        _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} пользователя {ownerId}");
 
-        if (deviceName != null && address != null)
-        {
-            return Ok(_devicesService.AddDevice(deviceName, address, ownerId));
-        }
-
-        return BadRequest();
+        return Ok(_devicesService.AddDevice(ownerId, request));
     }
 
     [HttpGet()]
-    public ActionResult<List<DeviceDto>> GetDevice([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
+    public ActionResult<List<DeviceDto>> GetDevices([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
     {
         if (id is not null)
         {
