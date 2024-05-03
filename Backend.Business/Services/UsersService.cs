@@ -4,12 +4,14 @@ using Backend.Core.Exceptions;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 using Backend.DataLayer.Repositories;
+using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
+using ValidationException = Backend.Core.Exceptions.ValidationException;
 
 namespace Backend.Business.Services;
 
@@ -18,31 +20,33 @@ public class UsersService : IUsersService
     private readonly IUsersRepository _usersRepository;
     private readonly ILogger _logger = Log.ForContext<UsersService>();
     private readonly IMapper _mapper;
+    private readonly IValidator<CreateUserRequest> _userCreateValidator;
+
     private const string pepper = "5_555_5";
     private const int iteration = 5;
 
-    public UsersService(IUsersRepository usersRepository, IMapper mapper)
+    public UsersService(IUsersRepository usersRepository, IMapper mapper, IValidator<CreateUserRequest> userCreateValidator)
     {
         _usersRepository = usersRepository;
         _mapper = mapper;
+        _userCreateValidator = userCreateValidator;
     }
 
     public Guid AddUser(CreateUserRequest request)
     {
-        //if (user.Age < 18 || user.Age > 150)
-        //{
-        //    throw new ValidationException("Возраст указан некорректно.");
-        //}
-        //if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 8)
-        //{
-        //    throw new ValidationException("Что-то не так с паролем.");
-        //}
+        var validationResult = _userCreateValidator.Validate(request);
+        if (validationResult.IsValid)
+        {
 
-        var user = _mapper.Map<UserDto>(request);
-        user.PasswordSalt = PasswordHasher.GenerateSalt();
-        user.PasswordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
+            var user = _mapper.Map<UserDto>(request);
+            user.PasswordSalt = PasswordHasher.GenerateSalt();
+            user.PasswordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
 
-        return _usersRepository.CreateUser(user);
+            return _usersRepository.CreateUser(user);
+        }
+
+        string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
+        throw new ValidationException(exceptions);
     }
 
     public List<UserDto> GetUsers()
