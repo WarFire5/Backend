@@ -29,7 +29,6 @@ public class DevicesService : IDevicesService
         {
             DeviceName = deviceName,
             DeviceType = DeviceType.PC,
-            Address = address,
             Owner = owner
         };
 

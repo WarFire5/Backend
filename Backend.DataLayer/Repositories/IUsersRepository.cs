@@ -6,7 +6,7 @@ public interface IUsersRepository
 {
     Guid AddUser(UserDto user);
     UserDto GetUserById(Guid id);
-    UserDto GetUserByUserName(string userName);
+    UserDto GetUserByLogin(string login);
     List<UserDto> GetUsers();
     void UpdateUser(UserDto user);
     void DeleteUserById(UserDto user);

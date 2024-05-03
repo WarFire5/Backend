@@ -36,7 +36,7 @@ public class UsersController : Controller
     [HttpPost]
     public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
-        _logger.Information($"{request.UserName} {request.Password}");
+        _logger.Information($"{request.Login} {request.Password}");
 
         return Ok(_usersService.AddUser(request));
     }
@@ -63,6 +63,16 @@ public class UsersController : Controller
     }
 
     [Authorize]
+    [HttpGet("{login}")]
+    public ActionResult<UserWithDevicesResponse> GetUserByLogin(string login)
+    {
+        _logger.Information($"Получаем юзера по логину {login}");
+        _usersService.GetUserByLogin(login);
+
+        return Ok(new UserWithDevicesResponse());
+    }
+
+    [Authorize]
     [HttpGet]
     public ActionResult<List<UserResponse>> GetUsers()
     {
@@ -75,7 +85,7 @@ public class UsersController : Controller
     [HttpPut]
     public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
-        _logger.Information($"{request.Id} {request.UserName}");
+        _logger.Information($"{request.Id} {request.Login}");
         _usersService.UpdateUser(request);
 
         return Ok();
@@ -97,10 +107,10 @@ public class UsersController : Controller
         return _devicesService.GetDeviceByOwnerId(ownerId);
     }
 
-    [Authorize]
-    [HttpGet("{ownerId}/coins")]
-    public CoinDto GetCoinByOwnerId(Guid ownerId)
-    {
-        return _coinsService.GetCoinByOwnerId(ownerId);
-    }
+    //[Authorize]
+    //[HttpGet("{ownerId}/coins")]
+    //public CoinDto GetQuantityCoinByOwnerId(Guid ownerId)
+    //{
+    //    return _coinsService.GetQuantityCoinByOwnerId(ownerId);
+    //}
 }

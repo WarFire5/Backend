@@ -50,14 +50,14 @@ public class UsersService : IUsersService
 
     public AuthenticatedResponse Login(LoginUserRequest request)
     {
-        _logger.Debug($"Ищем пользователя в базе по электронной почте: {request.Email}");
-        var user = _usersRepository.GetUserByUserName(request.Email);
+        _logger.Debug($"Ищем пользователя в базе по логину: {request.Login}");
+        var user = _usersRepository.GetUserByLogin(request.Login);
 
-        if (user == null) throw new NotFoundException("Username or password did not match.");
+        if (user == null) throw new NotFoundException("Login or password did not match.");
 
         if (CheckPassword(request, user))
         {
-            _logger.Debug($"Выдаём пользователю с адресом {request.Email} токен.");
+            _logger.Debug($"Выдаём пользователю с логином {request.Login} токен.");
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Backend_Backend_Backend_superSecretKey@345"));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -73,8 +73,8 @@ public class UsersService : IUsersService
             return new AuthenticatedResponse { Token = tokenString };
         }
 
-        _logger.Debug($"Пользователь с адресом {request.Email} не найден.");
-        throw new ValidationException("Email or password did not match.");
+        _logger.Debug($"Пользователь с логином {request.Login} не найден.");
+        throw new ValidationException("Login or password did not match.");
     }
 
     private bool CheckPassword(LoginUserRequest request, UserDto user)
@@ -82,8 +82,8 @@ public class UsersService : IUsersService
         var passwordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
         if (user.PasswordHash != passwordHash)
         {
-            Log.Debug($"Пароль пользователя не совпадает: {request.Email}");
-            throw new AuthenticationException("Email or password did not match.");
+            Log.Debug($"Пароль пользователя не совпадает: {request.Login}");
+            throw new AuthenticationException("Login or password did not match.");
         }
 
         return true;
@@ -95,10 +95,10 @@ public class UsersService : IUsersService
         return _usersRepository.GetUserById(id);
     }
 
-    public UserDto GetUserByUserName(string userName)
+    public UserDto GetUserByLogin(string login)
     {
         // здесь есть бизнес логика
-        return _usersRepository.GetUserByUserName(userName);
+        return _usersRepository.GetUserByLogin(login);
     }
 
     public List<UserDto> GetUsers()
@@ -114,7 +114,7 @@ public class UsersService : IUsersService
         {
             throw new NotFoundException($"Юзер с Id {request.Id} не найден");
         }
-        user.UserName = request.UserName;
+        user.Login = request.Login;
         user.Email = request.Email;
         user.Age = request.Age;
 

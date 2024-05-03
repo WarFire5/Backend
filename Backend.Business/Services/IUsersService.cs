@@ -9,7 +9,7 @@ public interface IUsersService
     Guid AddUser(AddUserRequest request);
     public AuthenticatedResponse Login(LoginUserRequest request);
     UserDto GetUserById(Guid id);
-    public UserDto GetUserByUserName(string userName);
+    public UserDto GetUserByLogin(string login);
     List<UserDto> GetUsers();
     void UpdateUser(UpdateUserRequest request);
     void DeleteUserById(Guid id);

@@ -14,6 +14,4 @@ public class CoinsService : ICoinsService
         _coinsRepository = coinsRepository;
         _usersRepository = usersRepository;
     }
-    public CoinDto GetCoinById(Guid id) => _coinsRepository.GetCoinById(id);
-    public CoinDto GetCoinByOwnerId(Guid ownerId) => _coinsRepository.GetCoinByOwnerId(ownerId);
 }

@@ -17,33 +17,16 @@ public class MainerWomanContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .Entity<DeviceDto>()
-            .HasOne(d => d.Owner)
-            .WithMany(u => u.Devices);
+              .Entity<DeviceDto>()
+              .HasOne(d => d.Owner)
+              .WithMany(u => u.Devices);
 
         modelBuilder
             .Entity<CoinDto>()
-            .HasOne(c => c.Owner)
+            .HasOne(c => c.Device)
             .WithMany(u => u.Coins);
 
-        //modelBuilder.Entity<DeviceDto>()
-        //    .Property(d => d.DeviceType)
-        //    .HasConversion<string>();
-
-        //modelBuilder.Entity<CoinDto>()
-        //    .Property(c => c.CoinType)
-        //    .HasConversion<string>();
-
-        modelBuilder
-           .Entity<DeviceDto>()
-           .HasData(Enum
-           .GetValues(typeof(DeviceType))
-           .Cast<DeviceType>()
-           .Select(e => new DeviceDto
-           {
-               Id = Guid.NewGuid(),
-               DeviceName = e.ToString()
-           })
-           );
+        modelBuilder.HasPostgresEnum<DeviceType>();
+        modelBuilder.HasPostgresEnum<CoinType>();
     }
 }

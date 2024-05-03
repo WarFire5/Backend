@@ -7,7 +7,7 @@ public class UserCreateValidator : AbstractValidator<AddUserRequest>
 {
     public UserCreateValidator()
     {
-        RuleFor(u => u.UserName).NotEmpty().NotNull().WithMessage("Заполните имя пользователя.");
+        RuleFor(u => u.Login).NotEmpty().NotNull().WithMessage("Заполните имя пользователя.");
         RuleFor(u => u.Email).NotEmpty().EmailAddress().WithMessage("Почта не должна быть пустой.");
         RuleFor(u => u.Password).NotEmpty().WithMessage("Пароль не должен быть пустым.")
             .MinimumLength(8).WithMessage("Длина пароля должна быть минимум 8 символов.")

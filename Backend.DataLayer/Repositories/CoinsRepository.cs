@@ -8,7 +8,4 @@ public class CoinsRepository : BaseRepository, ICoinsRepository
     {
     }
 
-    public CoinDto GetCoinById(Guid id) => _ctx.Coins.FirstOrDefault(c => c.Id == id);
-    public CoinDto GetCoinByOwnerId(Guid ownerId) => _ctx.Coins.FirstOrDefault(c => c.Owner.Id == ownerId);
-
 }

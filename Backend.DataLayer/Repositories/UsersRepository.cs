@@ -26,9 +26,9 @@ public class UsersRepository : BaseRepository, IUsersRepository
         return _ctx.Users.FirstOrDefault(u => u.Id == id);
     }
 
-    public UserDto GetUserByUserName(string userName)
+    public UserDto GetUserByLogin(string login)
     {
-        var user = _ctx.Users.FirstOrDefault(u => u.UserName == userName);
+        var user = _ctx.Users.FirstOrDefault(u => u.Login == login);
         return user;
     }
 

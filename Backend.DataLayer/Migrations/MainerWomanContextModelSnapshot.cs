@@ -21,6 +21,8 @@ namespace Backend.DataLayer.Migrations
                 .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "coin_type", new[] { "unknown", "bitcoin", "ethereum", "litecoin", "bitcoin_cash", "monero", "dash", "zcash", "vert_coin", "bit_shares", "factom", "nem", "dogecoin", "maid_safe_coin", "digi_byte", "nautiluscoin", "clams", "siacoin", "decred", "veri_coin", "einsteinium" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "device_type", new[] { "unknown", "pc", "laptop", "video_card" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Backend.Core.DTOs.CoinDto", b =>
@@ -30,17 +32,13 @@ namespace Backend.DataLayer.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("CoinName")
-                        .HasColumnType("text")
-                        .HasColumnName("coin_name");
-
                     b.Property<CoinType>("CoinType")
                         .HasColumnType("coin_type")
                         .HasColumnName("coin_type");
 
-                    b.Property<Guid?>("OwnerId")
+                    b.Property<Guid?>("DeviceId")
                         .HasColumnType("uuid")
-                        .HasColumnName("owner_id");
+                        .HasColumnName("device_id");
 
                     b.Property<string>("Quantity")
                         .HasColumnType("text")
@@ -49,8 +47,8 @@ namespace Backend.DataLayer.Migrations
                     b.HasKey("Id")
                         .HasName("pk_coins");
 
-                    b.HasIndex("OwnerId")
-                        .HasDatabaseName("ix_coins_owner_id");
+                    b.HasIndex("DeviceId")
+                        .HasDatabaseName("ix_coins_device_id");
 
                     b.ToTable("coins", (string)null);
                 });
@@ -61,10 +59,6 @@ namespace Backend.DataLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text")
-                        .HasColumnName("address");
 
                     b.Property<string>("DeviceName")
                         .HasColumnType("text")
@@ -85,32 +79,6 @@ namespace Backend.DataLayer.Migrations
                         .HasDatabaseName("ix_devices_owner_id");
 
                     b.ToTable("devices", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("6dfbf34a-4cbb-45eb-ba7b-77bde8fcf643"),
-                            DeviceName = "Unknown",
-                            DeviceType = DeviceType.Unknown
-                        },
-                        new
-                        {
-                            Id = new Guid("1813948c-4505-44aa-b6d3-c4af1c22d546"),
-                            DeviceName = "PC",
-                            DeviceType = DeviceType.Unknown
-                        },
-                        new
-                        {
-                            Id = new Guid("397cc8aa-93ec-4021-823b-091ca07dda71"),
-                            DeviceName = "Laptop",
-                            DeviceType = DeviceType.Unknown
-                        },
-                        new
-                        {
-                            Id = new Guid("2025d226-f7cf-4cb9-b66f-1ae1b08b362d"),
-                            DeviceName = "VideoCard",
-                            DeviceType = DeviceType.Unknown
-                        });
                 });
 
             modelBuilder.Entity("Backend.Core.DTOs.UserDto", b =>
@@ -128,6 +96,10 @@ namespace Backend.DataLayer.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
+                    b.Property<string>("Login")
+                        .HasColumnType("text")
+                        .HasColumnName("login");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
@@ -135,10 +107,6 @@ namespace Backend.DataLayer.Migrations
                     b.Property<string>("PasswordSalt")
                         .HasColumnType("text")
                         .HasColumnName("password_salt");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text")
-                        .HasColumnName("user_name");
 
                     b.HasKey("Id")
                         .HasName("pk_users");
@@ -148,12 +116,12 @@ namespace Backend.DataLayer.Migrations
 
             modelBuilder.Entity("Backend.Core.DTOs.CoinDto", b =>
                 {
-                    b.HasOne("Backend.Core.DTOs.UserDto", "Owner")
+                    b.HasOne("Backend.Core.DTOs.DeviceDto", "Device")
                         .WithMany("Coins")
-                        .HasForeignKey("OwnerId")
-                        .HasConstraintName("fk_coins_users_owner_id");
+                        .HasForeignKey("DeviceId")
+                        .HasConstraintName("fk_coins_devices_device_id");
 
-                    b.Navigation("Owner");
+                    b.Navigation("Device");
                 });
 
             modelBuilder.Entity("Backend.Core.DTOs.DeviceDto", b =>
@@ -166,10 +134,13 @@ namespace Backend.DataLayer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Backend.Core.DTOs.UserDto", b =>
+            modelBuilder.Entity("Backend.Core.DTOs.DeviceDto", b =>
                 {
                     b.Navigation("Coins");
+                });
 
+            modelBuilder.Entity("Backend.Core.DTOs.UserDto", b =>
+                {
                     b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
