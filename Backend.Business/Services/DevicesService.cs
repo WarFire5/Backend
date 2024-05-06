@@ -5,7 +5,6 @@ using Backend.Core.Exceptions;
 using Backend.Core.Models.Devices.Requests;
 using Backend.DataLayer.Repositories;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using ValidationException = Backend.Core.Exceptions.ValidationException;
 
@@ -27,32 +26,32 @@ public class DevicesService : IDevicesService
         _addDeviceValidator = addDeviceValidator;
     }
 
-    ////метод для отображения выпадающего списка в свагере
-    //public Guid AddDevice(Guid ownerId, DeviceType deviceType, AddDeviceRequest request)
-    //{
-    //    var validationResult = _addDeviceValidator.Validate(request);
-    //    if (validationResult.IsValid)
-    //    {
-    //        var owner = _usersRepository.GetUserById(ownerId);
+    //метод для отображения выпадающего списка в свагере
+    public Guid AddDevice(Guid ownerId, DeviceType deviceType, string deviceName)
+    {
+        //var validationResult = _addDeviceValidator.Validate(request);
+        //if (validationResult.IsValid)
+        //{
+            var owner = _usersRepository.GetUserById(ownerId);
 
-    //        if (owner == null)
-    //        {
-    //            throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
-    //        }
+            if (owner == null)
+            {
+                throw new NotFoundException($"Пользователь с Id {ownerId} не найден");
+            }
 
-    //        DeviceDto device = new DeviceDto()
-    //        {
-    //            DeviceName = request.DeviceName,
-    //            DeviceType = request.DeviceType,
-    //            Owner = owner
-    //        };
+            DeviceDto device = new DeviceDto()
+            {
+                DeviceName = deviceName,
+                DeviceType = deviceType,
+                Owner = owner
+            };
 
-    //        return _devicesRepository.AddDevice(device);
-    //    }
+            return _devicesRepository.AddDevice(device);
+        //}
 
-    //    string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
-    //    throw new ValidationException(exceptions);
-    //}
+        //string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
+        //throw new ValidationException(exceptions);
+    }
 
     public Guid AddDevice(Guid ownerId, AddDeviceRequest request)
     {

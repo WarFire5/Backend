@@ -22,14 +22,14 @@ public class DevicesController : Controller
         _devicesService = devicesService;
     }
 
-    ////метод для отображения выпадающего списка в свагере
-    //[HttpPost()]
-    //public ActionResult<Guid> AddDevice(Guid ownerId, DeviceType deviceType, [FromBody] AddDeviceRequest request)
-    //{
-    //    _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} пользователя {ownerId}");
+    //метод для отображения выпадающего списка в свагере
+    [HttpPost()]
+    public ActionResult<Guid> AddDevice(Guid ownerId, DeviceType deviceType, string deviceName)
+    {
+        _logger.Information($"Девайс {deviceName} типа {deviceType} пользователя {ownerId}");
 
-    //    return Ok(_devicesService.AddDevice(ownerId, deviceType, request));
-    //}
+        return Ok(_devicesService.AddDevice(ownerId, deviceType, deviceName));
+    }
 
     [HttpPost("{ownerId}")]
     public ActionResult<Guid> AddDevice(Guid ownerId, [FromBody] AddDeviceRequest request)
