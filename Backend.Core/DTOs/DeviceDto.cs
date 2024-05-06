@@ -7,5 +7,5 @@ public class DeviceDto : IdContainer
     public string DeviceName { get; set; }
     public DeviceType DeviceType { get; set; }
     public UserDto Owner { get; set; }
-    public List<CoinDto> Coins { get; set; }
+    public List<OperationWithCoinsDto> Coins { get; set; }
 }

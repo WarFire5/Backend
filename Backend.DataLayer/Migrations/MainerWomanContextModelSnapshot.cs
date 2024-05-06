@@ -22,36 +22,8 @@ namespace Backend.DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "coin_type", new[] { "unknown", "bitcoin", "ethereum", "litecoin", "bitcoin_cash", "monero", "dash", "zcash", "vert_coin", "bit_shares", "factom", "nem", "dogecoin", "maid_safe_coin", "digi_byte", "nautiluscoin", "clams", "siacoin", "decred", "veri_coin", "einsteinium" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "device_type", new[] { "unknown", "pc", "laptop", "video_card" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "device_type", new[] { "unknown", "pc", "laptop", "video_card", "asic" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Backend.Core.DTOs.CoinDto", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<CoinType>("CoinType")
-                        .HasColumnType("coin_type")
-                        .HasColumnName("coin_type");
-
-                    b.Property<Guid?>("DeviceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("device_id");
-
-                    b.Property<string>("Quantity")
-                        .HasColumnType("text")
-                        .HasColumnName("quantity");
-
-                    b.HasKey("Id")
-                        .HasName("pk_coins");
-
-                    b.HasIndex("DeviceId")
-                        .HasDatabaseName("ix_coins_device_id");
-
-                    b.ToTable("coins", (string)null);
-                });
 
             modelBuilder.Entity("Backend.Core.DTOs.DeviceDto", b =>
                 {
@@ -79,6 +51,34 @@ namespace Backend.DataLayer.Migrations
                         .HasDatabaseName("ix_devices_owner_id");
 
                     b.ToTable("devices", (string)null);
+                });
+
+            modelBuilder.Entity("Backend.Core.DTOs.OperationWithCoinsDto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<CoinType>("CoinType")
+                        .HasColumnType("coin_type")
+                        .HasColumnName("coin_type");
+
+                    b.Property<Guid?>("DeviceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("device_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.HasKey("Id")
+                        .HasName("pk_operation_with_coins_dto");
+
+                    b.HasIndex("DeviceId")
+                        .HasDatabaseName("ix_operation_with_coins_dto_device_id");
+
+                    b.ToTable("operation_with_coins_dto", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Core.DTOs.UserDto", b =>
@@ -114,16 +114,6 @@ namespace Backend.DataLayer.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Core.DTOs.CoinDto", b =>
-                {
-                    b.HasOne("Backend.Core.DTOs.DeviceDto", "Device")
-                        .WithMany("Coins")
-                        .HasForeignKey("DeviceId")
-                        .HasConstraintName("fk_coins_devices_device_id");
-
-                    b.Navigation("Device");
-                });
-
             modelBuilder.Entity("Backend.Core.DTOs.DeviceDto", b =>
                 {
                     b.HasOne("Backend.Core.DTOs.UserDto", "Owner")
@@ -132,6 +122,16 @@ namespace Backend.DataLayer.Migrations
                         .HasConstraintName("fk_devices_users_owner_id");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Backend.Core.DTOs.OperationWithCoinsDto", b =>
+                {
+                    b.HasOne("Backend.Core.DTOs.DeviceDto", "Device")
+                        .WithMany("Coins")
+                        .HasForeignKey("DeviceId")
+                        .HasConstraintName("fk_operation_with_coins_dto_devices_device_id");
+
+                    b.Navigation("Device");
                 });
 
             modelBuilder.Entity("Backend.Core.DTOs.DeviceDto", b =>

@@ -109,8 +109,8 @@ public class UsersController : Controller
 
     //[Authorize]
     //[HttpGet("{ownerId}/coins")]
-    //public CoinDto GetQuantityCoinByOwnerId(Guid ownerId)
+    //public CoinDto GetQuantityCoinsByOwnerId(Guid ownerId)
     //{
-    //    return _coinsService.GetQuantityCoinByOwnerId(ownerId);
+    //    return _coinsService.GetQuantityCoinsByOwnerId(ownerId);
     //}
 }

@@ -2,9 +2,9 @@
 
 namespace Backend.Core.DTOs;
 
-public class CoinDto : IdContainer
+public class OperationWithCoinsDto : IdContainer
 {
     public CoinType CoinType { get; set; }
-    public string Quantity { get; set; }
+    public int Quantity { get; set; }
     public DeviceDto Device { get; set; }
 }

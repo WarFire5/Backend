@@ -8,7 +8,7 @@ public class MainerWomanContext : DbContext
 {
     public DbSet<UserDto> Users { get; set; }
     public DbSet<DeviceDto> Devices { get; set; }
-    public DbSet<CoinDto> Coins { get; set; }
+    public DbSet<OperationWithCoinsDto> OperationsWithCoinsDto { get; set; }
 
     public MainerWomanContext(DbContextOptions<MainerWomanContext> options) : base(options)
     {
@@ -22,7 +22,7 @@ public class MainerWomanContext : DbContext
               .WithMany(u => u.Devices);
 
         modelBuilder
-            .Entity<CoinDto>()
+            .Entity<OperationWithCoinsDto>()
             .HasOne(c => c.Device)
             .WithMany(u => u.Coins);
 

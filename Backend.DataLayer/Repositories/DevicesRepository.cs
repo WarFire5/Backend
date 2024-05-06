@@ -1,4 +1,5 @@
 ﻿using Backend.Core.DTOs;
+using Backend.Core.Models.Coins.Responses;
 using Serilog;
 
 namespace Backend.DataLayer.Repositories;
@@ -29,5 +30,14 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
 
         _ctx.Devices.Remove(device);
         _ctx.SaveChanges();
+    }
+
+    public CoinIdResponse GenerateCoinWithDevice(DeviceDto device)
+    {
+        _ctx.Devices.Update(device);
+        _ctx.SaveChanges();
+        CoinIdResponse response = new CoinIdResponse() { Id = device.Id };
+
+        return response;
     }
 }

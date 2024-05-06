@@ -1,6 +1,7 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
 using Backend.Core.Enums;
+using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Devices.Requests;
 using BackendAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +23,14 @@ public class DevicesController : Controller
         _devicesService = devicesService;
     }
 
-    //метод для отображения выпадающего списка в свагере
-    [HttpPost()]
-    public ActionResult<Guid> AddDevice(Guid ownerId, DeviceType deviceType, string deviceName)
-    {
-        _logger.Information($"Девайс {deviceName} типа {deviceType} пользователя {ownerId}");
+    ////метод для отображения выпадающего списка в свагере
+    //[HttpPost()]
+    //public ActionResult<Guid> AddDevice(Guid ownerId, DeviceType deviceType, string deviceName)
+    //{
+    //    _logger.Information($"Девайс {deviceName} типа {deviceType} пользователя {ownerId}");
 
-        return Ok(_devicesService.AddDevice(ownerId, deviceType, deviceName));
-    }
+    //    return Ok(_devicesService.AddDevice(ownerId, deviceType, deviceName));
+    //}
 
     [HttpPost("{ownerId}")]
     public ActionResult<Guid> AddDevice(Guid ownerId, [FromBody] AddDeviceRequest request)
@@ -74,5 +75,11 @@ public class DevicesController : Controller
     {
         _devicesService.DeleteDeviceById(id);
         return Ok();
+    }
+
+    [HttpPost]
+    public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
+    {
+        return Ok(_devicesService.GenerateCoinWithDevice(request));
     }
 }
