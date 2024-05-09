@@ -8,6 +8,7 @@ using Backend.Core.Models.Coins.Responses;
 using Backend.Core.Models.Devices.Requests;
 using Backend.DataLayer.Repositories;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using ValidationException = Backend.Core.Exceptions.ValidationException;
 
@@ -84,8 +85,6 @@ public class DevicesService : IDevicesService
 
     public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);
 
-    public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
-
     public void DeleteDeviceById(Guid id)
     {
         var device = _devicesRepository.GetDeviceById(id);
@@ -95,11 +94,19 @@ public class DevicesService : IDevicesService
         _devicesRepository.DeleteDeviceById(device);
     }
 
-    public CoinIdResponse GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
+    public List<DeviceDto> GetDevices()
     {
-        var device = GetDeviceById(request.DeviceId);
+        // здесь есть бизнес логика
+        return _devicesRepository.GetDevices();
+    }
 
-        if (device is null) throw new NotFoundException($"Девайс с Id {request.DeviceId} не найден/ Could not find the device with Id {request.DeviceId}");
+    public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
+
+    public IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, GenerateCoinsWithDeviceRequest request)
+    {
+        var device = GetDeviceById(deviceId);
+
+        if (device is null) throw new NotFoundException($"Девайс с Id {deviceId} не найден/ Could not find the device with Id {deviceId}");
 
         if (device.Coins == null) device.Coins = new List<OperationWithCoinsDto>();
 

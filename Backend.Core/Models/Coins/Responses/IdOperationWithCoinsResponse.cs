@@ -2,7 +2,7 @@
 
 namespace Backend.Core.Models.Coins.Responses;
 
-public class CoinIdResponse
+public class IdOperationWithCoinsResponse
 {
     public Guid Id { get; set; }
 }

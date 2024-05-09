@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Backend.Core.DTOs;
+using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Devices.Requests;
 using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Responses;
@@ -14,5 +15,6 @@ public class DevicesMappingProfile : Profile
         CreateMap<DeviceDto, UserWithDevicesResponse>();
 
         CreateMap<AddDeviceRequest, DeviceDto>();
+        CreateMap<GenerateCoinsWithDeviceRequest, DeviceDto>();
     }
 }

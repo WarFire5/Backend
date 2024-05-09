@@ -9,9 +9,12 @@ public class CoinsMappingProfile : Profile
 {
     public CoinsMappingProfile()
     {
-        CreateMap<OperationWithCoinsDto, CoinIdResponse>();
+        CreateMap<OperationWithCoinsDto, IdOperationWithCoinsResponse>();
+        CreateMap<OperationWithCoinsDto, OperationWithCoinsResponse>()
+            .ForMember(dest => dest.DeviceId, opt => opt.MapFrom(src => src.Device.Id))
+            .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Device.Owner.Id));
 
         CreateMap<GetCoinTypeByDeviceTypeRequest, OperationWithCoinsDto>();
-        CreateMap<GenerateCoinWithDeviceRequest, OperationWithCoinsDto>();
+        CreateMap<GenerateCoinsWithDeviceRequest, OperationWithCoinsDto>();
     }
 }

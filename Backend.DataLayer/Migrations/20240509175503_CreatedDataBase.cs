@@ -52,7 +52,7 @@ namespace Backend.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "operation_with_coins_dto",
+                name: "operations_with_coins",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -62,9 +62,9 @@ namespace Backend.DataLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_operation_with_coins_dto", x => x.id);
+                    table.PrimaryKey("pk_operations_with_coins", x => x.id);
                     table.ForeignKey(
-                        name: "fk_operation_with_coins_dto_devices_device_id",
+                        name: "fk_operations_with_coins_devices_device_id",
                         column: x => x.device_id,
                         principalTable: "devices",
                         principalColumn: "id");
@@ -76,8 +76,8 @@ namespace Backend.DataLayer.Migrations
                 column: "owner_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_operation_with_coins_dto_device_id",
-                table: "operation_with_coins_dto",
+                name: "ix_operations_with_coins_device_id",
+                table: "operations_with_coins",
                 column: "device_id");
         }
 
@@ -85,7 +85,7 @@ namespace Backend.DataLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "operation_with_coins_dto");
+                name: "operations_with_coins");
 
             migrationBuilder.DropTable(
                 name: "devices");

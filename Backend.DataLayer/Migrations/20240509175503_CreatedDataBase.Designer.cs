@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.DataLayer.Migrations
 {
     [DbContext(typeof(MainerWomanContext))]
-    [Migration("20240506221617_CreatedDataBase")]
+    [Migration("20240509175503_CreatedDataBase")]
     partial class CreatedDataBase
     {
         /// <inheritdoc />
@@ -76,12 +76,12 @@ namespace Backend.DataLayer.Migrations
                         .HasColumnName("quantity");
 
                     b.HasKey("Id")
-                        .HasName("pk_operation_with_coins_dto");
+                        .HasName("pk_operations_with_coins");
 
                     b.HasIndex("DeviceId")
-                        .HasDatabaseName("ix_operation_with_coins_dto_device_id");
+                        .HasDatabaseName("ix_operations_with_coins_device_id");
 
-                    b.ToTable("operation_with_coins_dto", (string)null);
+                    b.ToTable("operations_with_coins", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Core.DTOs.UserDto", b =>
@@ -132,7 +132,7 @@ namespace Backend.DataLayer.Migrations
                     b.HasOne("Backend.Core.DTOs.DeviceDto", "Device")
                         .WithMany("Coins")
                         .HasForeignKey("DeviceId")
-                        .HasConstraintName("fk_operation_with_coins_dto_devices_device_id");
+                        .HasConstraintName("fk_operations_with_coins_devices_device_id");
 
                     b.Navigation("Device");
                 });

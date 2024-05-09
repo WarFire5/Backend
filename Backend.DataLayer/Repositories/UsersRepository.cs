@@ -32,11 +32,6 @@ public class UsersRepository : BaseRepository, IUsersRepository
         return user;
     }
 
-    public List<UserDto> GetUsers()
-    {
-        return _ctx.Users.ToList();
-    }
-
     public void UpdateUser(UserDto user)
     {
         _ctx.Users.Update(user);
@@ -47,5 +42,10 @@ public class UsersRepository : BaseRepository, IUsersRepository
     {
         _ctx.Users.Remove(user);
         _ctx.SaveChanges();
+    }
+
+    public List<UserDto> GetUsers()
+    {
+        return _ctx.Users.ToList();
     }
 }

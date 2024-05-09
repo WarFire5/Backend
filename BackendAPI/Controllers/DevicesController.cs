@@ -2,9 +2,12 @@
 using Backend.Core.DTOs;
 using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Devices.Requests;
+using Microsoft.AspNetCore.Authorization;
 using BackendAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Backend.Core.Models.Users.Responses;
+using Backend.Core.Models.Devices.Responses;
 
 namespace Backend.API.Controllers;
 
@@ -15,11 +18,13 @@ namespace Backend.API.Controllers;
 public class DevicesController : Controller
 {
     private readonly IDevicesService _devicesService;
+    private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
-    public DevicesController(IDevicesService devicesService)
+    public DevicesController(IDevicesService devicesService, ICoinsService coinsService)
     {
         _devicesService = devicesService;
+        _coinsService = coinsService;
     }
 
     ////метод для отображения выпадающего списка в свагере
@@ -51,13 +56,6 @@ public class DevicesController : Controller
         return Ok(_devicesService.GetDeviceById(id));
     }
 
-    [HttpGet("by-owner/{ownerId}")]
-    public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
-    {
-        _logger.Information($"Получаем список девайсов для пользователя {ownerId}.");
-        return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
-    }
-
     [HttpDelete("{id}")]
     public ActionResult DeleteDeviceById(Guid id)
     {
@@ -67,10 +65,33 @@ public class DevicesController : Controller
         return NoContent();
     }
 
-    [HttpPost("{deviceId}/coins")]
-    public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
+    [HttpGet]
+    public ActionResult<List<DeviceResponse>> GetDevices()
     {
-        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {request.DeviceId}.");
-        return Ok(_devicesService.GenerateCoinWithDevice(request));
+        _logger.Information($"Получаем список девайсов.");
+        _devicesService.GetDevices();
+
+        return Ok(new List<DeviceResponse>());
+    }
+
+    [HttpGet("by-owner/{ownerId}")]
+    public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
+    {
+        _logger.Information($"Получаем список девайсов для пользователя с айди {ownerId}.");
+        return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
+    }
+
+    [HttpPost("{deviceId}/coins")]
+    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, GenerateCoinsWithDeviceRequest request)
+    {
+        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {deviceId}.");
+        return Ok(_devicesService.GenerateCoinsWithDevice(deviceId,request));
+    }
+
+    [HttpGet("{deviceId}/coins")]
+    public ActionResult<List<OperationWithCoinsDto>> GetOperationWithCoinsByDeviceId(Guid deviceId)
+    {
+        _logger.Information($"Получаем список операций с коинами для девайса с айди {deviceId}.");
+        return Ok(_coinsService.GetOperationWithCoinsByDeviceId(deviceId));
     }
 }

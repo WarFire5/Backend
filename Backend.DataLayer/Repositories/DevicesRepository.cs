@@ -22,6 +22,17 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
 
     public DeviceDto GetDeviceById(Guid id) => _ctx.Devices.FirstOrDefault(d => d.Id == id);
 
+    public void DeleteDeviceById(DeviceDto device)
+    {
+        _ctx.Devices.Remove(device);
+        _ctx.SaveChanges();
+    }
+
+    public List<DeviceDto> GetDevices()
+    {
+        return _ctx.Devices.ToList();
+    }
+
     public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId)
     {
         _logger.Information($"Ищем девайсы по айди пользователя {ownerId}.");
@@ -37,17 +48,11 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
         return devices;
     }
 
-    public void DeleteDeviceById(DeviceDto device)
-    {
-        _ctx.Devices.Remove(device);
-        _ctx.SaveChanges();
-    }
-
-    public CoinIdResponse GenerateCoinWithDevice(DeviceDto device)
+    public IdOperationWithCoinsResponse GenerateCoinWithDevice(DeviceDto device)
     {
         _ctx.Devices.Update(device);
         _ctx.SaveChanges();
-        CoinIdResponse response = new CoinIdResponse() { Id = device.Id };
+        IdOperationWithCoinsResponse response = new IdOperationWithCoinsResponse() { Id = device.Id };
 
         return response;
     }

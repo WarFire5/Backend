@@ -1,13 +1,14 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Backend.Core.Enums;
 using Backend.Core.Models.Coins.Requests;
-using Microsoft.AspNetCore.Authorization;
+using Backend.Core.Models.Coins.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace Backend.API.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("/api/coins")]
 
@@ -17,17 +18,10 @@ public class CoinsController : Controller
     private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<CoinsController>();
 
-    public CoinsController(ICoinsService coinsService)
+    public CoinsController(IDevicesService devicesService, ICoinsService coinsService)
     {
+        _devicesService = devicesService;
         _coinsService = coinsService;
-    }
-
-    [HttpGet()]
-    public ActionResult<List<OperationWithCoinsDto>> GetCoins([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
-    {
-
-
-        return Ok(new List<OperationWithCoinsDto>());
     }
 
     //[HttpGet()]
@@ -37,9 +31,32 @@ public class CoinsController : Controller
     //}
 
     [HttpPost("by-device/{deviceId}")]
-    public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
+    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, GenerateCoinsWithDeviceRequest request)
     {
-        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {request.DeviceId}.");
-        return Ok(_devicesService.GenerateCoinWithDevice(request));
+        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {deviceId}.");
+        return Ok(_devicesService.GenerateCoinsWithDevice(deviceId, request));
+    }
+
+    [HttpGet()]
+    public ActionResult<List<OperationWithCoinsDto>> GetOperationsWithCoins()
+    {
+        _logger.Information($"Получаем список всех операций с коинами.");
+        _coinsService.GetOperationsWithCoins();
+
+        return Ok(new List<OperationWithCoinsDto>());
+    }
+
+    [HttpGet("by-device/{deviceId}")]
+    public ActionResult<List<OperationWithCoinsResponse>> GetOperationWithCoinsByDeviceId(Guid deviceId)
+    {
+        _logger.Information($"Получаем список всех операций с коинами для девайса с айди {deviceId}.");
+        return Ok(_coinsService.GetOperationWithCoinsByDeviceId(deviceId));
+    }
+
+    [HttpGet("by-device/{deviceId},{coinType}")]
+    public ActionResult<List<OperationWithCoinsResponse>> GetOperationWithCoinsByDeviceIdFromCoinType(Guid deviceId, CoinType coinType)
+    {
+        _logger.Information($"Получаем список операций с коинами типа {coinType} для девайса с айди {deviceId}.");
+        return Ok(_coinsService.GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType));
     }
 }

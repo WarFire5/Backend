@@ -8,7 +8,7 @@ public class MainerWomanContext : DbContext
 {
     public DbSet<UserDto> Users { get; set; }
     public DbSet<DeviceDto> Devices { get; set; }
-    public DbSet<OperationWithCoinsDto> OperationsWithCoinsDto { get; set; }
+    public DbSet<OperationWithCoinsDto> OperationsWithCoins { get; set; }
 
     public MainerWomanContext(DbContextOptions<MainerWomanContext> options) : base(options)
     {

@@ -2,9 +2,8 @@
 
 namespace Backend.Core.Models.Coins.Requests;
 
-public class GenerateCoinWithDeviceRequest
+public class GenerateCoinsWithDeviceRequest
 {
-    public Guid DeviceId { get; set; }
     public CoinType CoinType { get; set; }
     public int Quantity { get; set; }
 }

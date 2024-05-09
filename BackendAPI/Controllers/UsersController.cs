@@ -75,16 +75,6 @@ public class UsersController : Controller
     }
 
     [Authorize]
-    [HttpGet]
-    public ActionResult<List<UserResponse>> GetUsers()
-    {
-        _logger.Information($"Получаем список дпользователей.");
-        _usersService.GetUsers();
-
-        return Ok(new List<UserResponse>());
-    }
-
-    [Authorize]
     [HttpPut]
     public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
@@ -105,10 +95,20 @@ public class UsersController : Controller
     }
 
     [Authorize]
+    [HttpGet]
+    public ActionResult<List<UserResponse>> GetUsers()
+    {
+        _logger.Information($"Получаем список дпользователей.");
+        _usersService.GetUsers();
+
+        return Ok(new List<UserResponse>());
+    }
+
+    [Authorize]
     [HttpGet("{ownerId}/devices")]
     public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
     {
-        _logger.Information($"Получаем список девайсов для пользователя {ownerId}.");
+        _logger.Information($"Получаем список девайсов для пользователя с айди {ownerId}.");
         return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
     }
 
