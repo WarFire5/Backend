@@ -12,7 +12,7 @@ public interface IDevicesService
     //Guid AddDevice(Guid ownerId, DeviceType deviceType, string deviceName);
     Guid AddDevice(Guid ownerId, AddDeviceRequest request);
     DeviceDto GetDeviceById(Guid id);
-    DeviceDto GetDeviceByOwnerId(Guid ownerId);
+    List<DeviceDto> GetDevicesByOwnerId(Guid ownerId);
     void DeleteDeviceById(Guid id);
     CoinIdResponse GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request);
 }

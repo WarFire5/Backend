@@ -17,27 +17,25 @@ public class UsersController : Controller
 
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
-    private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     public UsersController(IUsersService usersService, IDevicesService devicesService, ICoinsService coinsService)
     {
         _usersService = usersService;
         _devicesService = devicesService;
-        _coinsService = coinsService;
     }
 
     [HttpGet("author")]
     public string GetAuthor()
     {
+        _logger.Information($"Получено имя автора.");
         return _author;
     }
 
     [HttpPost]
     public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
-        _logger.Information($"{request.Login} {request.Password}");
-
+        _logger.Information($"Пользователь с {request.Login} добавлен.");
         return Ok(_usersService.AddUser(request));
     }
 
@@ -46,9 +44,11 @@ public class UsersController : Controller
     {
         if (user is null)
         {
+            _logger.Information($"Аутентификация не удалась.");
             return BadRequest("Invalid client request");
         }
 
+        _logger.Information($"Аутентификация прошла успешно.");
         return Ok(_usersService.Login(user));
     }
 
@@ -56,9 +56,10 @@ public class UsersController : Controller
     [HttpGet("{id}")]
     public ActionResult<UserWithDevicesResponse> GetUserById(Guid id)
     {
-        _logger.Information($"Получаем юзера по айди {id}");
+        _logger.Information($"Получаем пользователя по айди {id}.");
         _usersService.GetUserById(Guid.NewGuid());
 
+        _logger.Information($"Возвращаем список девайсов пользователя с айди {id}.");
         return Ok(new UserWithDevicesResponse());
     }
 
@@ -66,9 +67,10 @@ public class UsersController : Controller
     [HttpGet("{login}")]
     public ActionResult<UserWithDevicesResponse> GetUserByLogin(string login)
     {
-        _logger.Information($"Получаем юзера по логину {login}");
+        _logger.Information($"Получаем юзера по логину {login}.");
         _usersService.GetUserByLogin(login);
 
+        _logger.Information($"Возвращаем список девайсов пользователя с логином {login}.");
         return Ok(new UserWithDevicesResponse());
     }
 
@@ -76,6 +78,7 @@ public class UsersController : Controller
     [HttpGet]
     public ActionResult<List<UserResponse>> GetUsers()
     {
+        _logger.Information($"Получаем список дпользователей.");
         _usersService.GetUsers();
 
         return Ok(new List<UserResponse>());
@@ -85,7 +88,7 @@ public class UsersController : Controller
     [HttpPut]
     public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
-        _logger.Information($"{request.Id} {request.Login}");
+        _logger.Information($"Обновили данные пользователя с {request.Id}.");
         _usersService.UpdateUser(request);
 
         return Ok();
@@ -95,16 +98,18 @@ public class UsersController : Controller
     [HttpDelete("{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
+        _logger.Information($"Удаляем пользователя по Id {id}.");
         _usersService.DeleteUserById(id);
 
-        return Ok();
+        return NoContent();
     }
 
     [Authorize]
     [HttpGet("{ownerId}/devices")]
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId)
+    public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
     {
-        return _devicesService.GetDeviceByOwnerId(ownerId);
+        _logger.Information($"Получаем список девайсов для пользователя {ownerId}.");
+        return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
     }
 
     //[Authorize]

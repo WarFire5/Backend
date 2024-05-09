@@ -3,6 +3,7 @@ using Backend.Core.DTOs;
 using Backend.Core.Models.Coins.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Backend.API.Controllers;
 
@@ -12,8 +13,9 @@ namespace Backend.API.Controllers;
 
 public class CoinsController : Controller
 {
-    private readonly ICoinsService _coinsService;
     private readonly IDevicesService _devicesService;
+    private readonly ICoinsService _coinsService;
+    private readonly Serilog.ILogger _logger = Log.ForContext<CoinsController>();
 
     public CoinsController(ICoinsService coinsService)
     {
@@ -34,9 +36,10 @@ public class CoinsController : Controller
     //    return _devicesService.GetCoinTypeByDeviceType (request);
     //}
 
-    //[HttpPost]
-    //public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
-    //{
-    //    return Ok(_coinsService.GenerateCoinWithDevice(request));
-    //}
+    [HttpPost("by-device/{deviceId}")]
+    public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
+    {
+        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {request.DeviceId}.");
+        return Ok(_devicesService.GenerateCoinWithDevice(request));
+    }
 }

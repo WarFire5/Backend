@@ -1,6 +1,5 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
-using Backend.Core.Enums;
 using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Devices.Requests;
 using BackendAPI.Controllers;
@@ -35,51 +34,43 @@ public class DevicesController : Controller
     [HttpPost("{ownerId}")]
     public ActionResult<Guid> AddDevice(Guid ownerId, [FromBody] AddDeviceRequest request)
     {
-        _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} пользователя {ownerId}");
-
+        _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} для пользователя {ownerId} добавлен.");
         return Ok(_devicesService.AddDevice(ownerId, request));
-    }
-
-    [HttpGet()]
-    public ActionResult<List<DeviceDto>> GetDevices([FromQuery] Guid? id, [FromQuery] Guid? ownerId)
-    {
-        if (id is not null)
-        {
-            return Ok(_devicesService.GetDeviceById((Guid)id));
-        }
-        if (ownerId is not null)
-        {
-            return Ok(_devicesService.GetDeviceByOwnerId((Guid)ownerId));
-        }
-
-        return Ok(new List<DeviceDto>());
     }
 
     [HttpGet("{id}")]
     public ActionResult<DeviceDto> GetDeviceById(Guid id)
     {
         if (id == Guid.Empty)
-            return NotFound($"Девайс с Id {id} не найден");
+        {
+            _logger.Information($"Девайс с Id {id} не найден.");
+            return NotFound($"Девайс с Id {id} не найден.");
+        }
 
+        _logger.Information($"Получаем девайс с Id {id}");
         return Ok(_devicesService.GetDeviceById(id));
     }
 
     [HttpGet("by-owner/{ownerId}")]
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId)
+    public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
     {
-        return _devicesService.GetDeviceByOwnerId(ownerId);
+        _logger.Information($"Получаем список девайсов для пользователя {ownerId}.");
+        return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
     }
 
     [HttpDelete("{id}")]
     public ActionResult DeleteDeviceById(Guid id)
     {
+        _logger.Information($"Удаляем девайс по Id {id}.");
         _devicesService.DeleteDeviceById(id);
-        return Ok();
+
+        return NoContent();
     }
 
-    [HttpPost]
+    [HttpPost("{deviceId}/coins")]
     public ActionResult GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
     {
+        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {request.DeviceId}.");
         return Ok(_devicesService.GenerateCoinWithDevice(request));
     }
 }

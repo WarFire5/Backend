@@ -7,7 +7,7 @@ public interface IDevicesRepository
 {
     Guid AddDevice(DeviceDto device);
     DeviceDto GetDeviceById(Guid id);
-    DeviceDto GetDeviceByOwnerId(Guid ownerId);
-    void DeleteDeviceById(Guid id);
+    List<DeviceDto> GetDevicesByOwnerId(Guid ownerId);
+    void DeleteDeviceById(DeviceDto device);
     CoinIdResponse GenerateCoinWithDevice(DeviceDto device);
 }

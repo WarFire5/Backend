@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Core.Data;
 using Backend.Core.DTOs;
 using Backend.Core.Enums;
 using Backend.Core.Exceptions;
@@ -16,7 +17,7 @@ public class DevicesService : IDevicesService
 {
     private readonly IDevicesRepository _devicesRepository;
     private readonly IUsersRepository _usersRepository;
-    private readonly ILogger _logger = Log.ForContext<UsersService>();
+    private readonly ILogger _logger = Log.ForContext<DevicesService>();
     private readonly IMapper _mapper;
     private readonly IValidator<AddDeviceRequest> _addDeviceValidator;
 
@@ -83,7 +84,7 @@ public class DevicesService : IDevicesService
 
     public DeviceDto GetDeviceById(Guid id) => _devicesRepository.GetDeviceById(id);
 
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _devicesRepository.GetDeviceByOwnerId(ownerId);
+    public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
 
     public void DeleteDeviceById(Guid id)
     {
@@ -91,7 +92,7 @@ public class DevicesService : IDevicesService
 
         if (device is null) throw new NotFoundException($"Девайс с Id {id} не найден");
 
-        _devicesRepository.DeleteDeviceById(id);
+        _devicesRepository.DeleteDeviceById(device);
     }
 
     public CoinIdResponse GenerateCoinWithDevice(GenerateCoinWithDeviceRequest request)
@@ -104,11 +105,7 @@ public class DevicesService : IDevicesService
 
         if (device.DeviceType == DeviceType.PC)
         {
-            if (request.CoinType == CoinType.Bitcoin
-                || request.CoinType == CoinType.Ethereum
-                || request.CoinType == CoinType.Litecoin
-                || request.CoinType == CoinType.BitcoinCash
-                || request.CoinType == CoinType.Monero)
+            if (EnumProvider.GetCoinTypesForPc().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
@@ -123,11 +120,7 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.Laptop)
         {
-            if (request.CoinType == CoinType.Dash
-                || request.CoinType == CoinType.Zcash
-                || request.CoinType == CoinType.VertCoin
-                || request.CoinType == CoinType.BitShares
-                || request.CoinType == CoinType.Factom)
+            if (EnumProvider.GetCoinTypesForLaptop().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
@@ -142,11 +135,7 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.VideoCard)
         {
-            if (request.CoinType == CoinType.NEM
-                || request.CoinType == CoinType.Dogecoin
-                || request.CoinType == CoinType.MaidSafeCoin
-                || request.CoinType == CoinType.DigiByte
-                || request.CoinType == CoinType.Nautiluscoin)
+            if (EnumProvider.GetCoinTypesForVideoCard().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
@@ -161,11 +150,7 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.ASIC)
         {
-            if (request.CoinType == CoinType.Clams
-                || request.CoinType == CoinType.Siacoin
-                || request.CoinType == CoinType.Decred
-                || request.CoinType == CoinType.VeriCoin
-                || request.CoinType == CoinType.Einsteinium)
+            if (EnumProvider.GetCoinTypesForAsic().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {

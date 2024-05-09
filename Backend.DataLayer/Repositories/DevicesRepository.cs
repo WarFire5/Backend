@@ -22,12 +22,23 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
 
     public DeviceDto GetDeviceById(Guid id) => _ctx.Devices.FirstOrDefault(d => d.Id == id);
 
-    public DeviceDto GetDeviceByOwnerId(Guid ownerId) => _ctx.Devices.FirstOrDefault(d => d.Owner.Id == ownerId);
-
-    public void DeleteDeviceById(Guid id)
+    public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId)
     {
-        var device = GetDeviceById(id);
+        _logger.Information($"Ищем девайсы по айди пользователя {ownerId}.");
 
+        var devices = _ctx.Devices.Where(d => d.Owner.Id == ownerId).ToList();
+        if (devices == null)
+        {
+            devices = new List<DeviceDto>();
+            _logger.Information($"У пользователя {ownerId} нет девайсов. Создаём пустой список.");
+        }
+
+        _logger.Information($"Отправляем список девайсов для пользователя {ownerId}.");
+        return devices;
+    }
+
+    public void DeleteDeviceById(DeviceDto device)
+    {
         _ctx.Devices.Remove(device);
         _ctx.SaveChanges();
     }
