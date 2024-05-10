@@ -16,6 +16,6 @@ public static class ConfigureServices
         services.AddScoped<ICoinsService, CoinsService>();
 
         services.AddScoped<IValidator<AddUserRequest>, AddUserValidator>();
-        services.AddScoped<IValidator<AddDeviceRequest>, AddDeviceValidator>();
+        services.AddScoped<IValidator<DeviceRequest>, AddDeviceValidator>();
     }
 }

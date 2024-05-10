@@ -5,6 +5,7 @@ using Backend.Core.Exceptions;
 using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Coins.Responses;
 using Backend.DataLayer.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Business.Services;
 
@@ -48,5 +49,51 @@ public class CoinsService : ICoinsService
         var result = _mapper.Map<List<OperationWithCoinsResponse>>(OperationWithCoinsDto);
 
         return result;
+    }
+
+    public CoinQuantityForCoinTypeResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
+    {
+        var operationList = GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType);
+        int quantity = 0;
+
+        foreach (var operation in operationList)
+        {
+            quantity += operation.Quantity;
+        }
+
+        var response = new CoinQuantityForCoinTypeResponse()
+        {
+            Quantity = quantity,
+            CoinType = coinType
+        };
+
+        return response;
+    }
+
+    ////получить лист типов коинов с количеством коинов с одного девайса
+    //public ListCoinTypesWithQuantityResponse GetListCoinTypesWithQuantityByDeviceId(Guid deviceId, CoinType coinType)
+    //{
+    //    var typeQuantityList = GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType);
+
+    //    return new ListCoinTypesWithQuantityResponse();
+    //}  
+    
+    //получить лист типов коинов с количеством коинов с одного девайса
+    public List<CoinTypesWithQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
+    {
+        var listOfCoins = _coinsRepository.GetListCoinTypesWithQuantityByDeviceId(deviceId);
+
+        var result = _mapper.Map<List<CoinTypesWithQuantityResponse>>(listOfCoins);
+
+        return result;
+    }
+
+     
+    //получить лист типов коинов с количеством коинов со всех девайсов пользователя
+    public ListCoinTypesWithQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType)
+    {
+        var typeQuantityList = GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType);
+
+        return new ListCoinTypesWithQuantityResponse();
     }
 }

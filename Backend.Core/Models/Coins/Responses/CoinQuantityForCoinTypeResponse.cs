@@ -1,8 +1,8 @@
 ﻿using Backend.Core.Enums;
 
-namespace Backend.Core.Models.Coins.Requests;
+namespace Backend.Core.Models.Coins.Responses;
 
-public class GenerateCoinsWithDeviceRequest
+public class CoinQuantityForCoinTypeResponse
 {
     public CoinType CoinType { get; set; }
     public int Quantity { get; set; }

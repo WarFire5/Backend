@@ -31,19 +31,19 @@ public class CoinsController : Controller
     //}
 
     [HttpPost("by-device/{deviceId}")]
-    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, GenerateCoinsWithDeviceRequest request)
+    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request)
     {
         _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {deviceId}.");
         return Ok(_devicesService.GenerateCoinsWithDevice(deviceId, request));
     }
 
     [HttpGet()]
-    public ActionResult<List<OperationWithCoinsDto>> GetOperationsWithCoins()
+    public ActionResult<List<OperationWithCoinsResponse>> GetOperationsWithCoins()
     {
         _logger.Information($"Получаем список всех операций с коинами.");
-        _coinsService.GetOperationsWithCoins();
+        var result = _coinsService.GetOperationsWithCoins();
 
-        return Ok(new List<OperationWithCoinsDto>());
+        return Ok(result);
     }
 
     [HttpGet("by-device/{deviceId}")]
@@ -58,5 +58,29 @@ public class CoinsController : Controller
     {
         _logger.Information($"Получаем список операций с коинами типа {coinType} для девайса с айди {deviceId}.");
         return Ok(_coinsService.GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType));
+    }
+
+    [HttpGet("by-device/quantity-for-type")]
+    public ActionResult<CoinQuantityForCoinTypeResponse> GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
+    {
+        _logger.Information($"Получаем количество коинов типа {coinType} для девайса с айди {deviceId}.");
+
+        return Ok(_coinsService.GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType));
+    }
+
+    [HttpGet("by-device/quantity-for-device")]
+    public ActionResult<List<CoinTypesWithQuantityResponse>> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
+    {
+        _logger.Information($"Получаем список типов коинов с их количеством для девайса с айди {deviceId}.");
+
+        return Ok(_coinsService.GetListCoinTypesWithQuantityByDeviceId(deviceId));
+    }
+
+    [HttpGet("by-device/quantity-for-owner")]
+    public ActionResult<ListCoinTypesWithQuantityResponse> GetListCoinTypesWithQuantityByOwnerId([FromRoute] Guid ownerId, Guid deviceId, CoinType coinType)
+    {
+        _logger.Information($"Получаем список типов коинов с их количеством для пользователя с айди {ownerId}.");
+
+        return Ok(_coinsService.GetListCoinTypesWithQuantityByOwnerId(ownerId, deviceId, coinType));
     }
 }

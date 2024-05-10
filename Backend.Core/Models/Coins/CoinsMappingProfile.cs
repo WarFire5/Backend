@@ -13,8 +13,8 @@ public class CoinsMappingProfile : Profile
         CreateMap<OperationWithCoinsDto, OperationWithCoinsResponse>()
             .ForMember(dest => dest.DeviceId, opt => opt.MapFrom(src => src.Device.Id))
             .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.Device.Owner.Id));
+        CreateMap<OperationWithCoinsDto, CoinTypesWithQuantityResponse>();
 
-        CreateMap<GetCoinTypeByDeviceTypeRequest, OperationWithCoinsDto>();
-        CreateMap<GenerateCoinsWithDeviceRequest, OperationWithCoinsDto>();
+        CreateMap<CoinsWithDeviceRequest, OperationWithCoinsDto>();
     }
 }

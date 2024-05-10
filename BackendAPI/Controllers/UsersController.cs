@@ -99,9 +99,9 @@ public class UsersController : Controller
     public ActionResult<List<UserResponse>> GetUsers()
     {
         _logger.Information($"Получаем список дпользователей.");
-        _usersService.GetUsers();
+        var result = _usersService.GetUsers();
 
-        return Ok(new List<UserResponse>());
+        return Ok(result);
     }
 
     [Authorize]

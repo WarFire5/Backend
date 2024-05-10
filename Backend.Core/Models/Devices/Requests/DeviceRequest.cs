@@ -2,7 +2,7 @@
 
 namespace Backend.Core.Models.Devices.Requests;
 
-public class AddDeviceRequest
+public class DeviceRequest
 {
     public string DeviceName { get; set; }
     public DeviceType DeviceType { get; set; }

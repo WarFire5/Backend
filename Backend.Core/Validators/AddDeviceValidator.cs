@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Backend.Core.Validators;
 
-public class AddDeviceValidator : AbstractValidator<AddDeviceRequest>
+public class AddDeviceValidator : AbstractValidator<DeviceRequest>
 {
     public AddDeviceValidator()
     {

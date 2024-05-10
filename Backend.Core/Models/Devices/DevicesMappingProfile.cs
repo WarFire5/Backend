@@ -14,7 +14,7 @@ public class DevicesMappingProfile : Profile
         CreateMap<DeviceDto, DeviceResponse>();
         CreateMap<DeviceDto, UserWithDevicesResponse>();
 
-        CreateMap<AddDeviceRequest, DeviceDto>();
-        CreateMap<GenerateCoinsWithDeviceRequest, DeviceDto>();
+        CreateMap<DeviceRequest, DeviceDto>();
+        CreateMap<CoinsWithDeviceRequest, DeviceDto>();
     }
 }

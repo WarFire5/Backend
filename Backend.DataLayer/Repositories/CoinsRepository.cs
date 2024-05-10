@@ -1,5 +1,6 @@
 ﻿using Backend.Core.DTOs;
 using Backend.Core.Enums;
+using Backend.Core.Models.Coins.Responses;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -46,5 +47,27 @@ public class CoinsRepository : BaseRepository, ICoinsRepository
 
         _logger.Information($"Отправляем список операций для девайса с айди {deviceId}.");
         return coins;
+    } 
+    
+    public List<OperationWithCoinsDto> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
+    {
+        _logger.Information($"Ищем операции с коинами по айди девайса {deviceId}.");
+        var coinGroups = _ctx.OperationsWithCoins
+                               .Where(o => o.Device.Id == deviceId)
+                               .GroupBy(o => o.CoinType)
+                               .Select(g => new OperationWithCoinsDto
+                               {
+                                   CoinType = g.Key,
+                                   Quantity = g.Sum(o => o.Quantity)
+                               })
+                               .ToList();
+        //if (coins == null)
+        //{
+        //    coins = new List<OperationWithCoinsDto>();
+        //    _logger.Information($"У девайса с айди {deviceId} нет операций. Создаём пустой список.");
+        //}
+
+        _logger.Information($"Отправляем список операций для девайса с айди {deviceId}.");
+        return coinGroups;
     }
 }

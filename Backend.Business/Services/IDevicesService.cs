@@ -9,12 +9,10 @@ namespace Backend.Business.Services;
 
 public interface IDevicesService
 {
-    ////метод для отображения выпадающего списка в свагере
-    //Guid AddDevice(Guid ownerId, DeviceType deviceType, string deviceName);
-    Guid AddDevice(Guid ownerId, AddDeviceRequest request);
+    Guid AddDevice(Guid ownerId, DeviceRequest request);
     DeviceDto GetDeviceById(Guid id);
     void DeleteDeviceById(Guid id);
     List<DeviceDto> GetDevices();
     List<DeviceDto> GetDevicesByOwnerId(Guid ownerId);
-    IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, GenerateCoinsWithDeviceRequest request);
+    IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request);
 }
