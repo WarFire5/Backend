@@ -14,5 +14,5 @@ public interface IDevicesService
     void DeleteDeviceById(Guid id);
     List<DeviceDto> GetDevices();
     List<DeviceDto> GetDevicesByOwnerId(Guid ownerId);
-    IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request);
+    IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinTypeAndQuantityRequest request);
 }

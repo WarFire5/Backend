@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Backend.Core.DTOs;
+using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 
@@ -15,6 +16,6 @@ public class UsersMappingProfile : Profile
 
         CreateMap<UserDto, AuthenticatedResponse>();
         CreateMap<UserDto, UserResponse>();
-        CreateMap<UserDto, UserWithDevicesResponse>();
+        CreateMap<UserDto, ListDevicesResponse>();
     }
 }

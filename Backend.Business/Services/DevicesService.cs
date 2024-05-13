@@ -44,8 +44,8 @@ public class DevicesService : IDevicesService
 
             DeviceDto device = new DeviceDto()
             {
-                DeviceName = request.DeviceName,
-                DeviceType = request.DeviceType,
+                DeviceName = request.Name,
+                DeviceType = request.Type,
                 Owner = owner
             };
 
@@ -75,7 +75,7 @@ public class DevicesService : IDevicesService
 
     public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
 
-    public IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request)
+    public IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinTypeAndQuantityRequest request)
     {
         var device = GetDeviceById(deviceId);
 
@@ -85,11 +85,11 @@ public class DevicesService : IDevicesService
 
         if (device.DeviceType == DeviceType.PC)
         {
-            if (EnumProvider.GetCoinTypesForPc().Contains(request.CoinType))
+            if (EnumProvider.GetCoinTypesForPc().Contains(request.Type))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.CoinType,
+                    CoinType = request.Type,
                     Quantity = request.Quantity,
                 });
 
@@ -100,11 +100,11 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.Laptop)
         {
-            if (EnumProvider.GetCoinTypesForLaptop().Contains(request.CoinType))
+            if (EnumProvider.GetCoinTypesForLaptop().Contains(request.Type))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.CoinType,
+                    CoinType = request.Type,
                     Quantity = request.Quantity,
                 });
 
@@ -115,11 +115,11 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.VideoCard)
         {
-            if (EnumProvider.GetCoinTypesForVideoCard().Contains(request.CoinType))
+            if (EnumProvider.GetCoinTypesForVideoCard().Contains(request.Type))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.CoinType,
+                    CoinType = request.Type,
                     Quantity = request.Quantity,
                 });
 
@@ -130,11 +130,11 @@ public class DevicesService : IDevicesService
         }
         if (device.DeviceType == DeviceType.ASIC)
         {
-            if (EnumProvider.GetCoinTypesForAsic().Contains(request.CoinType))
+            if (EnumProvider.GetCoinTypesForAsic().Contains(request.Type))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.CoinType,
+                    CoinType = request.Type,
                     Quantity = request.Quantity,
                 });
 

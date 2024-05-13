@@ -51,7 +51,7 @@ public class CoinsService : ICoinsService
         return result;
     }
 
-    public CoinQuantityForCoinTypeResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
+    public CoinTypeAndQuantityResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
     {
         var operationList = GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType);
         int quantity = 0;
@@ -61,10 +61,10 @@ public class CoinsService : ICoinsService
             quantity += operation.Quantity;
         }
 
-        var response = new CoinQuantityForCoinTypeResponse()
+        var response = new CoinTypeAndQuantityResponse()
         {
             Quantity = quantity,
-            CoinType = coinType
+            Type = coinType
         };
 
         return response;
@@ -79,21 +79,21 @@ public class CoinsService : ICoinsService
     //}  
     
     //получить лист типов коинов с количеством коинов с одного девайса
-    public List<CoinTypesWithQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
+    public List<CoinTypeAndQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
     {
         var listOfCoins = _coinsRepository.GetListCoinTypesWithQuantityByDeviceId(deviceId);
 
-        var result = _mapper.Map<List<CoinTypesWithQuantityResponse>>(listOfCoins);
+        var result = _mapper.Map<List<CoinTypeAndQuantityResponse>>(listOfCoins);
 
         return result;
     }
 
      
     //получить лист типов коинов с количеством коинов со всех девайсов пользователя
-    public ListCoinTypesWithQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType)
+    public ListCoinTypeAndQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType)
     {
         var typeQuantityList = GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType);
 
-        return new ListCoinTypesWithQuantityResponse();
+        return new ListCoinTypeAndQuantityResponse();
     }
 }

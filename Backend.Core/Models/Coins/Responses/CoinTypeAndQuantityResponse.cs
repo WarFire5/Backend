@@ -2,8 +2,8 @@
 
 namespace Backend.Core.Models.Coins.Responses;
 
-public class CoinQuantityForCoinTypeResponse
+public class CoinTypeAndQuantityResponse
 {
-    public CoinType CoinType { get; set; }
+    public CoinType Type { get; set; }
     public int Quantity { get; set; }
 }

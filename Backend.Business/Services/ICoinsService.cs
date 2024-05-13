@@ -12,7 +12,7 @@ public interface ICoinsService
     List<OperationWithCoinsDto> GetOperationsWithCoins();
     List<OperationWithCoinsResponse> GetOperationWithCoinsByDeviceId(Guid deviceId);
     List<OperationWithCoinsResponse> GetOperationWithCoinsByDeviceIdFromCoinType(Guid deviceId, CoinType coinType);
-    CoinQuantityForCoinTypeResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType);
-    List<CoinTypesWithQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId);
-    ListCoinTypesWithQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType);
+    CoinTypeAndQuantityResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType);
+    List<CoinTypeAndQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId);
+    ListCoinTypeAndQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType);
 }

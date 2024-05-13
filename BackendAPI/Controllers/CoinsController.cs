@@ -31,9 +31,9 @@ public class CoinsController : Controller
     //}
 
     [HttpPost("by-device/{deviceId}")]
-    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request)
+    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, CoinTypeAndQuantityRequest request)
     {
-        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {deviceId}.");
+        _logger.Information($"Добываем коины типа {request.Type} девайсом c Id {deviceId}.");
         return Ok(_devicesService.GenerateCoinsWithDevice(deviceId, request));
     }
 
@@ -61,7 +61,7 @@ public class CoinsController : Controller
     }
 
     [HttpGet("by-device/quantity-for-type")]
-    public ActionResult<CoinQuantityForCoinTypeResponse> GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
+    public ActionResult<CoinTypeAndQuantityResponse> GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
     {
         _logger.Information($"Получаем количество коинов типа {coinType} для девайса с айди {deviceId}.");
 
@@ -69,7 +69,7 @@ public class CoinsController : Controller
     }
 
     [HttpGet("by-device/quantity-for-device")]
-    public ActionResult<List<CoinTypesWithQuantityResponse>> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
+    public ActionResult<List<CoinTypeAndQuantityResponse>> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
     {
         _logger.Information($"Получаем список типов коинов с их количеством для девайса с айди {deviceId}.");
 
@@ -77,7 +77,7 @@ public class CoinsController : Controller
     }
 
     [HttpGet("by-device/quantity-for-owner")]
-    public ActionResult<ListCoinTypesWithQuantityResponse> GetListCoinTypesWithQuantityByOwnerId([FromRoute] Guid ownerId, Guid deviceId, CoinType coinType)
+    public ActionResult<ListCoinTypeAndQuantityResponse> GetListCoinTypesWithQuantityByOwnerId([FromRoute] Guid ownerId, Guid deviceId, CoinType coinType)
     {
         _logger.Information($"Получаем список типов коинов с их количеством для пользователя с айди {ownerId}.");
 

@@ -7,7 +7,7 @@ public class AddDeviceValidator : AbstractValidator<DeviceRequest>
 {
     public AddDeviceValidator()
     {
-        RuleFor(d => d.DeviceName).NotEmpty().NotNull().WithMessage("Дайте имя девайсу.");
-        RuleFor(d => d.DeviceType).NotEmpty().NotNull().WithMessage("Выберите тип девайса.");
+        RuleFor(d => d.Name).NotEmpty().NotNull().WithMessage("Дайте имя девайсу.");
+        RuleFor(d => d.Type).NotEmpty().NotNull().WithMessage("Выберите тип девайса.");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -36,8 +37,8 @@ public class UsersController : Controller
     public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
         _logger.Information($"Пользователь с {request.Login} добавлен.");
-        //return new Createdresult ("",_usersService.AddUser(request));
-        return Created("",_usersService.AddUser(request));
+        //return new CreatedResult() {Value = _usersService.AddUser(request)};
+        return Created("", _usersService.AddUser(request));
     }
 
     [HttpPost("login")]
@@ -55,24 +56,24 @@ public class UsersController : Controller
 
     [Authorize]
     [HttpGet("{id}")]
-    public ActionResult<UserWithDevicesResponse> GetUserById(Guid id)
+    public ActionResult<ListDevicesResponse> GetUserById(Guid id)
     {
         _logger.Information($"Получаем пользователя по айди {id}.");
         _usersService.GetUserById(Guid.NewGuid());
 
         _logger.Information($"Возвращаем список девайсов пользователя с айди {id}.");
-        return Ok(new UserWithDevicesResponse());
+        return Ok(new ListDevicesResponse());
     }
 
     [Authorize]
     [HttpGet("{login}")]
-    public ActionResult<UserWithDevicesResponse> GetUserByLogin(string login)
+    public ActionResult<ListDevicesResponse> GetUserByLogin(string login)
     {
         _logger.Information($"Получаем юзера по логину {login}.");
         _usersService.GetUserByLogin(login);
 
         _logger.Information($"Возвращаем список девайсов пользователя с логином {login}.");
-        return Ok(new UserWithDevicesResponse());
+        return Ok(new ListDevicesResponse());
     }
 
     [Authorize]

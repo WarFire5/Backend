@@ -1,6 +1,4 @@
-﻿using Backend.Core.Enums;
-
-namespace Backend.Core.Models.Coins.Responses;
+﻿namespace Backend.Core.Models.Coins.Responses;
 
 public class IdOperationWithCoinsResponse
 {

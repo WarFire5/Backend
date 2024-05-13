@@ -2,8 +2,8 @@
 
 namespace Backend.Core.Models.Coins.Requests;
 
-public class CoinsWithDeviceRequest
+public class CoinAndDeviceTypesRequest
 {
     public CoinType CoinType { get; set; }
-    public int Quantity { get; set; }
+    public DeviceType DeviceType { get; set; }
 }

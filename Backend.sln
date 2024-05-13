@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend.Core", "Backend.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.Business.Tests", "Backend.Business.Tests\Backend.Business.Tests.csproj", "{CEAEF082-2D91-4C20-9A18-BAE1CCB27BA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.Api.Tests", "Backend.Api.Tests\Backend.Api.Tests.csproj", "{3A0F6A98-EA83-489B-9EE8-06FCDD5ECD19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.DataLayer.Tests", "Backend.DataLayer.Tests\Backend.DataLayer.Tests.csproj", "{AC413D2C-329B-47A2-AEE0-F8F5F6462D80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{CEAEF082-2D91-4C20-9A18-BAE1CCB27BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEAEF082-2D91-4C20-9A18-BAE1CCB27BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEAEF082-2D91-4C20-9A18-BAE1CCB27BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A0F6A98-EA83-489B-9EE8-06FCDD5ECD19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A0F6A98-EA83-489B-9EE8-06FCDD5ECD19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A0F6A98-EA83-489B-9EE8-06FCDD5ECD19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A0F6A98-EA83-489B-9EE8-06FCDD5ECD19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC413D2C-329B-47A2-AEE0-F8F5F6462D80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC413D2C-329B-47A2-AEE0-F8F5F6462D80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC413D2C-329B-47A2-AEE0-F8F5F6462D80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC413D2C-329B-47A2-AEE0-F8F5F6462D80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

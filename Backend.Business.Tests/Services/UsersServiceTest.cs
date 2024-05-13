@@ -1,15 +1,16 @@
-using Moq;
+using AutoMapper;
 using Backend.Business.Services;
 using Backend.Core.DTOs;
-using Backend.DataLayer.Repositories;
-using System.Net.Cache;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using Backend.Core.Models.Users.Requests;
-using AutoMapper;
-using FluentValidation;
-using Backend.Core.Validators;
+using Backend.Core.Exceptions;
 using Backend.Core.Models.Users;
+using Backend.Core.Models.Users.Requests;
+using Backend.Core.Models.Users.Responses;
+using Backend.Core.Validators;
+using Backend.DataLayer.Repositories;
+using FluentAssertions;
+using FluentValidation;
+using Moq;
+using ValidationException = Backend.Core.Exceptions.ValidationException;
 
 namespace Backend.Business.Tests.Services;
 
@@ -29,7 +30,7 @@ public class UsersServiceTest
     }
 
     [Fact]
-    public void AddUser_ValidAddUserRequestSent_GuidReceived()
+    public void AddUser_ValidAddUserRequestSent_GuidReceived() // название метода_что воспроизводим_что получаем
     {
         // arrange настройка
         var validAddUserRequest = new AddUserRequest()
@@ -37,11 +38,11 @@ public class UsersServiceTest
             Login = "Test",
             Password = "passwordP1!",
             Email = "qq@qq.qq",
-            Age = 21,
+            Age = 21
         };
         var expectedGuid = Guid.NewGuid();
         _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
-        var sut = new UsersService(_usersRepositoryMock.Object,_mapper,_addUserValidator); // system under test тестируемая система
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator); // system under test тестируемая система
 
         // act выполнение
         var actual = sut.AddUser(validAddUserRequest);
@@ -51,72 +52,81 @@ public class UsersServiceTest
         _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Once);
     }
 
-    //[Fact]
-    //public void AddUser_DtoWithInvalidAgeSent_AgeErrorReceived()
-    //{
-    //    // arrange
-    //    var invalidUserDto = new UserDto()
-    //    {
-    //        Age = 12,
-    //        Login = "Test",
-    //        Email = "qq@qq.qq",
-    //        Password = "password"
-    //    };
-    //    var expectedGuid = Guid.NewGuid();
-    //    _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
-    //    var sut = new UsersService(_usersRepositoryMock.Object);
+    [Fact]
+    public void AddUser_RequestWithInvalidAgeSent_AgeErrorReceived()
+    {
+        // arrange
+        var invalidAddUserRequest = new AddUserRequest()
+        {
+            Login = "Test",
+            Password = "passwordP1!",
+            Email = "qq@qq.qq",
+            Age = 2
+        };
+        var expectedGuid = Guid.NewGuid();
+        _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
 
-    //    // act, assert
-    //    Assert.Throws<ValidationException>(() => sut.AddUser(invalidUserDto));
-    //    _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
-    //}
+        // act, assert
+        Assert.Throws<ValidationException>(() => sut.AddUser(invalidAddUserRequest));
+        _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
+    }
 
-    //[Theory]
-    //[InlineData(null)]
-    //[InlineData("passwor")]
-    //[InlineData("")]
-    //public void AddUser_DtoWithInvalidPasswordSent_PasswordErrorReceived()
-    //{
-    //    // arrange
-    //    var invalidUserDto = new UserDto()
-    //    {
-    //        Age = 18,
-    //        Login = "Test",
-    //        Email = "qq@qq.qq",
-    //        Password = password,
-    //    };
-    //    var expectedGuid = Guid.NewGuid();
-    //    _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
-    //    var sut = new UsersService(_usersRepositoryMock.Object);
+    [Theory]
+    [InlineData(null)]
+    [InlineData("password")]
+    [InlineData("")]
+    public void AddUser_RequestWithInvalidPasswordSent_PasswordErrorReceived(string password)
+    {
+        // arrange
+        var invalidAddUserRequest = new AddUserRequest()
+        {
+            Login = "Test",
+            Password = password,
+            Email = "qq@qq.qq",
+            Age = 21
+        };
+        var expectedGuid = Guid.NewGuid();
+        _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
 
-    //    // act, assert
-    //    Assert.Throws<ValidationException>(() => sut.AddUser(invalidUserDto));
-    //    _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
-    //}
+        // act, assert
+        Assert.Throws<ValidationException>(() => sut.AddUser(invalidAddUserRequest));
+        _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
+    }
 
-    //[Fact]
-    //public void GetUsers_Called_UsersReceived()
-    //{
-    //    // arrange
-    //    var expected = new List<UserDto>() { new UserDto() { Email = "qq@qq.qq" }, new UserDto() { Email = "ww@ww.ww" } };
-    //    _usersRepositoryMock.Setup(x => x.GetUsers()).Returns(expected);
-    //    var sut = new UsersService(_usersRepositoryMock.Object);
+    [Fact]
+    public void GetUsers_Called_UsersReceived()
+    {
+        // arrange
+        //var validUserResponse = new UserResponse
+        //{
+        //    Id = Guid.NewGuid(),
+        //    Login = "Test",
+        //    Email = "qq@qq.qq",
+        //    Age = 21
+        //};
+        var dto = new List<UserDto>() { new UserDto() { Login = "Test", Email = "qq@qq.qq", Age = 21 } };
+        var expected = new List<UserResponse>() { new UserResponse() { Login = "Test", Email = "qq@qq.qq", Age = 21 } };
+        _usersRepositoryMock.Setup(x => x.GetUsers()).Returns(dto);
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
 
-    //    // act
-    //    var actual = sut.GetUsers();
+        // act
+        var actual = sut.GetUsers();
 
-    //    // assert
-    //    Assert.Equal(expected, actual);
-    //    _usersRepositoryMock.Verify(x => x.GetUsers(), Times.Once);
-    //}
+        // assert
+        actual.Should().BeEquivalentTo(expected);
+        //Assert.Equal(expected, actual);
+        _usersRepositoryMock.Verify(x => x.GetUsers(), Times.Once);
+    }
 
     //[Fact]
     //public void DeleteUserById_ValidGuidSent_NoErrorsReceived()
     //{
     //    // arrange
     //    var userId = Guid.NewGuid();
-    //    _usersRepositoryMock.Setup(x => x.DeleteUserById(userId)).Returns(expected);
-    //    var sut = new UsersService(_usersRepositoryMock.Object);
+    //    _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns(new UserDto());
+    //    var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
 
     //    // act
     //    sut.DeleteUserById(userId);
@@ -132,7 +142,7 @@ public class UsersServiceTest
     //    // arrange
     //    var userId = Guid.Empty;
     //    _usersRepositoryMock.Setup(x => x.GetUserById(userId)).Returns((UserDto)null);
-    //    var sut = new UsersService(_usersRepositoryMock.Object);
+    //    var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
 
     //    // act, assert
     //    Assert.Throws<NotFoundException>(() => sut.DeleteUserById(userId));

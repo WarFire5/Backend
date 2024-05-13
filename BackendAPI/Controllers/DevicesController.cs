@@ -30,7 +30,7 @@ public class DevicesController : Controller
     [HttpPost("{ownerId}")]
     public ActionResult<Guid> AddDevice(Guid ownerId, [FromBody] DeviceRequest request)
     {
-        _logger.Information($"Девайс {request.DeviceName} типа {request.DeviceType} для пользователя {ownerId} добавлен.");
+        _logger.Information($"Девайс {request.Name} типа {request.Type} для пользователя {ownerId} добавлен.");
         return Ok(_devicesService.AddDevice(ownerId, request));
     }
 
@@ -73,9 +73,9 @@ public class DevicesController : Controller
     }
 
     [HttpPost("{deviceId}/coins")]
-    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, CoinsWithDeviceRequest request)
+    public ActionResult GenerateCoinWithDevice([FromRoute] Guid deviceId, CoinTypeAndQuantityRequest request)
     {
-        _logger.Information($"Добываем коины типа {request.CoinType} девайсом c Id {deviceId}.");
+        _logger.Information($"Добываем коины типа {request.Type} девайсом c Id {deviceId}.");
         return Ok(_devicesService.GenerateCoinsWithDevice(deviceId, request));
     }
 
