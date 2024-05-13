@@ -36,7 +36,8 @@ public class UsersController : Controller
     public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
         _logger.Information($"Пользователь с {request.Login} добавлен.");
-        return Ok(_usersService.AddUser(request));
+        //return new Createdresult ("",_usersService.AddUser(request));
+        return Created("",_usersService.AddUser(request));
     }
 
     [HttpPost("login")]
@@ -94,7 +95,7 @@ public class UsersController : Controller
         return NoContent();
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpGet]
     public ActionResult<List<UserResponse>> GetUsers()
     {

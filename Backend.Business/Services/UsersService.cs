@@ -34,18 +34,18 @@ public class UsersService : IUsersService
 
     public Guid AddUser(AddUserRequest request)
     {
-        //var validationResult = _addUserValidator.Validate(request);
-        //if (validationResult.IsValid)
-        //{
+        var validationResult = _addUserValidator.Validate(request);
+        if (validationResult.IsValid)
+        {
             var user = _mapper.Map<UserDto>(request);
             user.PasswordSalt = PasswordHasher.GenerateSalt();
             user.PasswordHash = PasswordHasher.ComputeHash(request.Password, user.PasswordSalt, pepper, iteration);
 
             return _usersRepository.AddUser(user);
-        //}
+        }
 
-        //string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
-        //throw new ValidationException(exceptions);
+        string exceptions = string.Join(Environment.NewLine, validationResult.Errors);
+        throw new ValidationException(exceptions);
     }
 
     public AuthenticatedResponse Login(LoginUserRequest request)
@@ -126,9 +126,11 @@ public class UsersService : IUsersService
         _usersRepository.DeleteUserById(user);
     }
     
-    public List<UserDto> GetUsers()
+    public List<UserResponse> GetUsers()
     {
         // здесь есть бизнес логика
-        return _usersRepository.GetUsers();
+        var users = _usersRepository.GetUsers();
+        var result =_mapper.Map<List<UserResponse>>(users);
+        return result;
     }
 }

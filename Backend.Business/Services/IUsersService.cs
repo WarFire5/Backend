@@ -12,5 +12,5 @@ public interface IUsersService
     public UserDto GetUserByLogin(string login);
     void UpdateUser(UpdateUserRequest request);
     void DeleteUserById(Guid id);
-    List<UserDto> GetUsers();
+    List<UserResponse> GetUsers();
 }
