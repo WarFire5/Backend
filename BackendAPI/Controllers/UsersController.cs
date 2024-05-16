@@ -1,5 +1,6 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
+using Backend.Core.Models.Coins.Responses;
 using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
@@ -18,6 +19,7 @@ public class UsersController : Controller
 
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
+    private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
     public UsersController(IUsersService usersService, IDevicesService devicesService, ICoinsService coinsService)
@@ -26,6 +28,7 @@ public class UsersController : Controller
         _devicesService = devicesService;
     }
 
+    // получаем имя автора
     [HttpGet("author")]
     public string GetAuthor()
     {
@@ -33,14 +36,15 @@ public class UsersController : Controller
         return _author;
     }
 
-    [HttpPost]
+    // добавляем пользователя
+    [HttpPost("user")]
     public ActionResult<Guid> AddUser([FromBody] AddUserRequest request)
     {
         _logger.Information($"Пользователь с {request.Login} добавлен.");
-        //return new CreatedResult() {Value = _usersService.AddUser(request)};
         return Created("", _usersService.AddUser(request));
     }
 
+    // авторизуем пользователя
     [HttpPost("login")]
     public ActionResult<AuthenticatedResponse> Login([FromBody] LoginUserRequest user)
     {
@@ -54,30 +58,39 @@ public class UsersController : Controller
         return Ok(_usersService.Login(user));
     }
 
-    [Authorize]
-    [HttpGet("{id}")]
-    public ActionResult<ListDevicesResponse> GetUserById(Guid id)
+    // получаем пользователя по айди
+    //[Authorize]
+    [HttpGet("user-by-{id}")]
+    public ActionResult<UserDto> GetUserById(Guid id)
     {
-        _logger.Information($"Получаем пользователя по айди {id}.");
-        _usersService.GetUserById(Guid.NewGuid());
+        if (id == Guid.Empty)
+        {
+            _logger.Information($"Пользователь с Id {id} не найден.");
+            return NotFound($"Пользователь с Id {id} не найден.");
+        }
 
-        _logger.Information($"Возвращаем список девайсов пользователя с айди {id}.");
-        return Ok(new ListDevicesResponse());
+        _logger.Information($"Получаем пользователя с Id {id}");
+        return Ok(_usersService.GetUserById(id));
     }
 
-    [Authorize]
-    [HttpGet("{login}")]
-    public ActionResult<ListDevicesResponse> GetUserByLogin(string login)
+    // получаем пользователя по логину
+    //[Authorize]
+    [HttpGet("user-by-login/{login}")]
+    public ActionResult<UserDto> GetUserByLogin(string login)
     {
-        _logger.Information($"Получаем юзера по логину {login}.");
-        _usersService.GetUserByLogin(login);
+        if (login == "")
+        {
+            _logger.Information($"Пользователь с логином {login} не найден.");
+            return NotFound($"Пользователь с логином {login} не найден.");
+        }
 
-        _logger.Information($"Возвращаем список девайсов пользователя с логином {login}.");
-        return Ok(new ListDevicesResponse());
+        _logger.Information($"Получаем пользователя с логином {login}");
+        return Ok(_usersService.GetUserByLogin(login));
     }
 
+    // обновляем данные пользователя по айди
     [Authorize]
-    [HttpPut]
+    [HttpPut("user-by-{id}")]
     public ActionResult UpdateUser([FromBody] UpdateUserRequest request)
     {
         _logger.Information($"Обновили данные пользователя с {request.Id}.");
@@ -86,8 +99,9 @@ public class UsersController : Controller
         return Ok();
     }
 
+    // удаляем пользователя по айди
     [Authorize]
-    [HttpDelete("{id}")]
+    [HttpDelete("user-by-{id}")]
     public ActionResult DeleteUserById(Guid id)
     {
         _logger.Information($"Удаляем пользователя по Id {id}.");
@@ -96,28 +110,21 @@ public class UsersController : Controller
         return NoContent();
     }
 
+    // получаем список пользователей
     //[Authorize]
-    [HttpGet]
+    [HttpGet("list-users")]
     public ActionResult<List<UserResponse>> GetUsers()
     {
-        _logger.Information($"Получаем список дпользователей.");
-        var result = _usersService.GetUsers();
-
-        return Ok(result);
+        _logger.Information($"Получаем список пользователей.");
+        return Ok(_usersService.GetUsers());
     }
 
-    [Authorize]
-    [HttpGet("{ownerId}/devices")]
-    public ActionResult<List<DeviceDto>> GetDevicesByOwnerId(Guid ownerId)
+    // получаем список девайсов по овнер айди
+    //[Authorize]
+    [HttpGet("list-devices-by-{ownerId}")]
+    public ActionResult<List<DeviceResponse>> GetDevicesByOwnerId(Guid ownerId)
     {
-        _logger.Information($"Получаем список девайсов для пользователя с айди {ownerId}.");
+        _logger.Information($"Получаем список девайсов для пользователя с Id {ownerId}.");
         return Ok(_devicesService.GetDevicesByOwnerId(ownerId));
     }
-
-    //[Authorize]
-    //[HttpGet("{ownerId}/coins")]
-    //public CoinDto GetQuantityCoinsByOwnerId(Guid ownerId)
-    //{
-    //    return _coinsService.GetQuantityCoinsByOwnerId(ownerId);
-    //}
 }

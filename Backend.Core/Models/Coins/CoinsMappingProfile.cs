@@ -9,6 +9,7 @@ public class CoinsMappingProfile : Profile
 {
     public CoinsMappingProfile()
     {
+        CreateMap<OperationWithCoinsDto, CoinTypeResponse>();
         CreateMap<OperationWithCoinsDto, IdOperationWithCoinsResponse>();
         CreateMap<OperationWithCoinsDto, OperationWithCoinsResponse>()
             .ForMember(dest => dest.DeviceId, opt => opt.MapFrom(src => src.Device.Id))

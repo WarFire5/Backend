@@ -16,6 +16,5 @@ public class UsersMappingProfile : Profile
 
         CreateMap<UserDto, AuthenticatedResponse>();
         CreateMap<UserDto, UserResponse>();
-        CreateMap<UserDto, ListDevicesResponse>();
     }
 }

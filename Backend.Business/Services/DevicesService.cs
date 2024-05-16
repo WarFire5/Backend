@@ -6,6 +6,7 @@ using Backend.Core.Exceptions;
 using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Coins.Responses;
 using Backend.Core.Models.Devices.Requests;
+using Backend.Core.Models.Devices.Responses;
 using Backend.DataLayer.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,7 @@ public class DevicesService : IDevicesService
     public Guid AddDevice(Guid ownerId, DeviceRequest request)
     {
         var validationResult = _addDeviceValidator.Validate(request);
+
         if (validationResult.IsValid)
         {
             var owner = _usersRepository.GetUserById(ownerId);
@@ -44,8 +46,8 @@ public class DevicesService : IDevicesService
 
             DeviceDto device = new DeviceDto()
             {
-                DeviceName = request.Name,
-                DeviceType = request.Type,
+                DeviceName = request.DeviceName,
+                DeviceType = request.DeviceType,
                 Owner = owner
             };
 
@@ -67,13 +69,23 @@ public class DevicesService : IDevicesService
         _devicesRepository.DeleteDeviceById(device);
     }
 
-    public List<DeviceDto> GetDevices()
+    public List<DeviceResponse> GetDevices()
     {
-        // здесь есть бизнес логика
-        return _devicesRepository.GetDevices();
+        var devices = _devicesRepository.GetDevices();
+        var result = _mapper.Map<List<DeviceResponse>>(devices);
+
+        return result;
     }
 
-    public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
+    //public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId) => _devicesRepository.GetDevicesByOwnerId(ownerId);
+
+    public List<DeviceResponse> GetDevicesByOwnerId(Guid ownerId)
+    {
+        var devices = _devicesRepository.GetDevicesByOwnerId(ownerId);
+        var result = _mapper.Map<List<DeviceResponse>>(devices);
+
+        return result;
+    }
 
     public IdOperationWithCoinsResponse GenerateCoinsWithDevice([FromRoute] Guid deviceId, CoinTypeAndQuantityRequest request)
     {
@@ -85,11 +97,11 @@ public class DevicesService : IDevicesService
 
         if (device.DeviceType == DeviceType.PC)
         {
-            if (EnumProvider.GetCoinTypesForPc().Contains(request.Type))
+            if (EnumProvider.GetCoinTypesForPc().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.Type,
+                    CoinType = request.CoinType,
                     Quantity = request.Quantity,
                 });
 
@@ -98,13 +110,14 @@ public class DevicesService : IDevicesService
 
             throw new ValidationException("Тип валюты не соответсвует выбранному устройству");
         }
+
         if (device.DeviceType == DeviceType.Laptop)
         {
-            if (EnumProvider.GetCoinTypesForLaptop().Contains(request.Type))
+            if (EnumProvider.GetCoinTypesForLaptop().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.Type,
+                    CoinType = request.CoinType,
                     Quantity = request.Quantity,
                 });
 
@@ -113,13 +126,14 @@ public class DevicesService : IDevicesService
 
             throw new ValidationException("Тип валюты не соответсвует выбранному устройству");
         }
+
         if (device.DeviceType == DeviceType.VideoCard)
         {
-            if (EnumProvider.GetCoinTypesForVideoCard().Contains(request.Type))
+            if (EnumProvider.GetCoinTypesForVideoCard().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.Type,
+                    CoinType = request.CoinType,
                     Quantity = request.Quantity,
                 });
 
@@ -128,13 +142,14 @@ public class DevicesService : IDevicesService
 
             throw new ValidationException("Тип валюты не соответсвует выбранному устройству");
         }
+
         if (device.DeviceType == DeviceType.ASIC)
         {
-            if (EnumProvider.GetCoinTypesForAsic().Contains(request.Type))
+            if (EnumProvider.GetCoinTypesForAsic().Contains(request.CoinType))
             {
                 device.Coins.Add(new OperationWithCoinsDto()
                 {
-                    CoinType = request.Type,
+                    CoinType = request.CoinType,
                     Quantity = request.Quantity,
                 });
 

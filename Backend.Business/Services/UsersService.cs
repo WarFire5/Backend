@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Backend.Core.DTOs;
 using Backend.Core.Exceptions;
+using Backend.Core.Models.Coins.Responses;
+using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 using Backend.DataLayer.Repositories;
@@ -58,7 +60,6 @@ public class UsersService : IUsersService
         if (CheckPassword(request, user))
         {
             _logger.Debug($"Выдаём пользователю с логином {request.Login} токен.");
-
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Backend_Backend_Backend_superSecretKey@345"));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var tokenOptions = new JwtSecurityToken(
@@ -89,17 +90,9 @@ public class UsersService : IUsersService
         return true;
     }
 
-    public UserDto GetUserById(Guid id)
-    {
-        // здесь есть бизнес логика
-        return _usersRepository.GetUserById(id);
-    }
+    public UserDto GetUserById(Guid id) => _usersRepository.GetUserById(id);
 
-    public UserDto GetUserByLogin(string login)
-    {
-        // здесь есть бизнес логика
-        return _usersRepository.GetUserByLogin(login);
-    }
+    public UserDto GetUserByLogin(string login) => _usersRepository.GetUserByLogin(login);
 
     public void UpdateUser(UpdateUserRequest request)
     {
@@ -128,9 +121,9 @@ public class UsersService : IUsersService
     
     public List<UserResponse> GetUsers()
     {
-        // здесь есть бизнес логика
         var users = _usersRepository.GetUsers();
         var result =_mapper.Map<List<UserResponse>>(users);
+
         return result;
     }
 }

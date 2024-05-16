@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Backend.Core.DTOs;
 using Backend.Core.Enums;
-using Backend.Core.Exceptions;
-using Backend.Core.Models.Coins.Requests;
 using Backend.Core.Models.Coins.Responses;
 using Backend.DataLayer.Repositories;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Business.Services;
 
@@ -24,28 +20,33 @@ public class CoinsService : ICoinsService
         _mapper = mapper;
     }
 
-    //public DeviceDto GetCoinTypeByDeviceType(GetCoinTypeByDeviceTypeRequest request)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    public List<OperationWithCoinsDto> GetOperationsWithCoins()
+    public List<CoinTypeResponse> GetCoinTypesByDeviceType(DeviceType deviceType)
     {
-        // здесь есть бизнес логика
-        return _coinsRepository.GetOperationsWithCoins();
+        var listOperationWithCoins = _coinsRepository.GetCoinTypesByDeviceType(deviceType);
+        var result = _mapper.Map<List<CoinTypeResponse>>(listOperationWithCoins);
+
+        return result;
     }
 
-    public List<OperationWithCoinsResponse> GetOperationWithCoinsByDeviceId(Guid deviceId)
+    public List<OperationWithCoinsResponse> GetOperationsWithCoins()
     {
-        var OperationWithCoinsDto = _coinsRepository.GetOperationWithCoinsByDeviceId(deviceId);
+        var operations = _coinsRepository.GetOperationsWithCoins();
+        var result = _mapper.Map<List<OperationWithCoinsResponse>>(operations);
+
+        return result;
+    }
+
+    public List<OperationWithCoinsResponse> GetOperationsWithCoinsByDeviceId(Guid deviceId)
+    {
+        var OperationWithCoinsDto = _coinsRepository.GetOperationsWithCoinsByDeviceId(deviceId);
         var result = _mapper.Map<List<OperationWithCoinsResponse>>(OperationWithCoinsDto);
 
         return result;
-    } 
-    
-    public List<OperationWithCoinsResponse> GetOperationWithCoinsByDeviceIdFromCoinType(Guid deviceId, CoinType coinType)
+    }
+
+    public List<OperationWithCoinsResponse> GetOperationsWithCoinsForCoinTypeByDeviceId(Guid deviceId, CoinType coinType)
     {
-        var OperationWithCoinsDto = _coinsRepository.GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType);
+        var OperationWithCoinsDto = _coinsRepository.GetOperationsWithCoinsForCoinTypeByDeviceId(deviceId, coinType);
         var result = _mapper.Map<List<OperationWithCoinsResponse>>(OperationWithCoinsDto);
 
         return result;
@@ -53,7 +54,7 @@ public class CoinsService : ICoinsService
 
     public CoinTypeAndQuantityResponse GetCoinQuantityFromCurrentTypeForCurrentDeviceId(Guid deviceId, CoinType coinType)
     {
-        var operationList = GetOperationWithCoinsByDeviceIdFromCoinType(deviceId, coinType);
+        var operationList = GetOperationsWithCoinsForCoinTypeByDeviceId(deviceId, coinType);
         int quantity = 0;
 
         foreach (var operation in operationList)
@@ -64,36 +65,25 @@ public class CoinsService : ICoinsService
         var response = new CoinTypeAndQuantityResponse()
         {
             Quantity = quantity,
-            Type = coinType
+            CoinType = coinType
         };
 
         return response;
     }
 
-    ////получить лист типов коинов с количеством коинов с одного девайса
-    //public ListCoinTypesWithQuantityResponse GetListCoinTypesWithQuantityByDeviceId(Guid deviceId, CoinType coinType)
-    //{
-    //    var typeQuantityList = GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType);
-
-    //    return new ListCoinTypesWithQuantityResponse();
-    //}  
-    
-    //получить лист типов коинов с количеством коинов с одного девайса
     public List<CoinTypeAndQuantityResponse> GetListCoinTypesWithQuantityByDeviceId(Guid deviceId)
     {
         var listOfCoins = _coinsRepository.GetListCoinTypesWithQuantityByDeviceId(deviceId);
-
         var result = _mapper.Map<List<CoinTypeAndQuantityResponse>>(listOfCoins);
 
         return result;
     }
 
-     
-    //получить лист типов коинов с количеством коинов со всех девайсов пользователя
-    public ListCoinTypeAndQuantityResponse GetListCoinTypesWithQuantityByOwnerId(Guid ownerId, Guid deviceId, CoinType coinType)
+    public List<CoinTypeAndQuantityResponse> GetListCoinTypesWithQuantityByOwnerId(Guid ownerId)
     {
-        var typeQuantityList = GetCoinQuantityFromCurrentTypeForCurrentDeviceId(deviceId, coinType);
+        var listOfCoins = _coinsRepository.GetListCoinTypesWithQuantityByOwnerId(ownerId);
+        var result = _mapper.Map<List<CoinTypeAndQuantityResponse>>(listOfCoins);
 
-        return new ListCoinTypeAndQuantityResponse();
+        return result;
     }
 }

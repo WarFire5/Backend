@@ -35,16 +35,15 @@ public class DevicesRepository : BaseRepository, IDevicesRepository
 
     public List<DeviceDto> GetDevicesByOwnerId(Guid ownerId)
     {
-        _logger.Information($"Ищем девайсы по айди пользователя {ownerId}.");
-
+        _logger.Information($"Ищем девайсы для пользователя с Id {ownerId}.");
         var devices = _ctx.Devices.Where(d => d.Owner.Id == ownerId).ToList();
         if (devices == null)
         {
             devices = new List<DeviceDto>();
-            _logger.Information($"У пользователя {ownerId} нет девайсов. Создаём пустой список.");
+            _logger.Information($"У пользователя с Id {ownerId} нет девайсов. Создаём пустой список.");
         }
 
-        _logger.Information($"Отправляем список девайсов для пользователя {ownerId}.");
+        _logger.Information($"Отправляем список девайсов для пользователя с Id {ownerId}.");
         return devices;
     }
 

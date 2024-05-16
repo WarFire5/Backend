@@ -52,16 +52,19 @@ public class UsersServiceTest
         _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Once);
     }
 
-    [Fact]
-    public void AddUser_RequestWithInvalidAgeSent_AgeErrorReceived()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("ËÎÃÈÍ")]
+    [InlineData("")]
+    public void AddUser_RequestWithInvalidLoginSent_AgeErrorReceived(string login)
     {
         // arrange
         var invalidAddUserRequest = new AddUserRequest()
         {
-            Login = "Test",
+            Login = login,
             Password = "passwordP1!",
             Email = "qq@qq.qq",
-            Age = 2
+            Age = 21
         };
         var expectedGuid = Guid.NewGuid();
         _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
@@ -95,17 +98,63 @@ public class UsersServiceTest
         _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("qq@qq.")]
+    [InlineData("qq@qq")]
+    [InlineData("qq")]
+    [InlineData("qq@.qq")]
+    [InlineData("qq.qq")]
+    [InlineData(".qq")]
+    [InlineData("qq.")]
+    [InlineData("")]
+    public void AddUser_RequestWithInvalidEmailSent_AgeErrorReceived(string email)
+    {
+        // arrange
+        var invalidAddUserRequest = new AddUserRequest()
+        {
+            Login = "Test",
+            Password = "passwordP1!",
+            Email = email,
+            Age = 21
+        };
+        var expectedGuid = Guid.NewGuid();
+        _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
+
+        // act, assert
+        Assert.Throws<ValidationException>(() => sut.AddUser(invalidAddUserRequest));
+        _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(1)]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void AddUser_RequestWithInvalidAgeSent_AgeErrorReceived(int age)
+    {
+        // arrange
+        var invalidAddUserRequest = new AddUserRequest()
+        {
+            Login = "Test",
+            Password = "passwordP1!",
+            Email = "qq@qq.qq",
+            Age = age
+        };
+        var expectedGuid = Guid.NewGuid();
+        _usersRepositoryMock.Setup(x => x.AddUser(It.IsAny<UserDto>())).Returns(expectedGuid);
+        var sut = new UsersService(_usersRepositoryMock.Object, _mapper, _addUserValidator);
+
+        // act, assert
+        Assert.Throws<ValidationException>(() => sut.AddUser(invalidAddUserRequest));
+        _usersRepositoryMock.Verify(x => x.AddUser(It.IsAny<UserDto>()), Times.Never);
+    }
+
     [Fact]
     public void GetUsers_Called_UsersReceived()
     {
         // arrange
-        //var validUserResponse = new UserResponse
-        //{
-        //    Id = Guid.NewGuid(),
-        //    Login = "Test",
-        //    Email = "qq@qq.qq",
-        //    Age = 21
-        //};
         var dto = new List<UserDto>() { new UserDto() { Login = "Test", Email = "qq@qq.qq", Age = 21 } };
         var expected = new List<UserResponse>() { new UserResponse() { Login = "Test", Email = "qq@qq.qq", Age = 21 } };
         _usersRepositoryMock.Setup(x => x.GetUsers()).Returns(dto);
