@@ -1,6 +1,5 @@
 ﻿using Backend.Business.Services;
 using Backend.Core.DTOs;
-using Backend.Core.Models.Coins.Responses;
 using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
@@ -19,10 +18,9 @@ public class UsersController : Controller
 
     private readonly IUsersService _usersService;
     private readonly IDevicesService _devicesService;
-    private readonly ICoinsService _coinsService;
     private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
 
-    public UsersController(IUsersService usersService, IDevicesService devicesService, ICoinsService coinsService)
+    public UsersController(IUsersService usersService, IDevicesService devicesService)
     {
         _usersService = usersService;
         _devicesService = devicesService;

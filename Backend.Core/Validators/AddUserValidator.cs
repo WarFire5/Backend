@@ -17,8 +17,8 @@ public class AddUserValidator : AbstractValidator<AddUserRequest>
             .Matches(@"[a-z]+").WithMessage("Пароль должен содержать хотя бы 1 строчную букву.")
             .Matches(@"[0-9]+").WithMessage("Пароль должен содержать хотя бы 1 цифру.")
             .Matches(@"[\!\?\*\.]+").WithMessage("Пароль должен содержать хотя бы 1 символ (!? *.).");
-        RuleFor(u => u.Age).NotEmpty().WithMessage("Возраст не должен быть пустым.");
-        RuleFor(u => u.Age).GreaterThan(17).WithMessage("Возраст должен быть от 18.");
-        RuleFor(u => u.Age).LessThan(200).WithMessage("Возраст должен быть меньше 200.");
+        RuleFor(u => u.Age).NotEmpty().WithMessage("Возраст не должен быть пустым.")
+            .GreaterThan(17).WithMessage("Возраст должен быть от 18.")
+            .LessThan(200).WithMessage("Возраст должен быть меньше 200.");
     }
 }

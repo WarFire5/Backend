@@ -1,5 +1,4 @@
-﻿using Backend.Core.DTOs;
-using Backend.Core.Enums;
+﻿using Backend.Core.Enums;
 using Backend.Core.Models.Coins.Responses;
 
 namespace Backend.Business.Services;

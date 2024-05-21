@@ -51,7 +51,7 @@ public class UsersRepository : BaseRepository, IUsersRepository
 
     public List<UserDto> GetUsers()
     {
-        _logger.Information($"Получаем список пользователей."); 
+        _logger.Information($"Получаем список пользователей.");
         return _ctx.Users.ToList();
     }
 

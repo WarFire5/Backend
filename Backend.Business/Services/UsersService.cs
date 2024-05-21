@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Backend.Core.DTOs;
 using Backend.Core.Exceptions;
-using Backend.Core.Models.Coins.Responses;
-using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 using Backend.DataLayer.Repositories;
@@ -118,11 +116,11 @@ public class UsersService : IUsersService
 
         _usersRepository.DeleteUserById(user);
     }
-    
+
     public List<UserResponse> GetUsers()
     {
         var users = _usersRepository.GetUsers();
-        var result =_mapper.Map<List<UserResponse>>(users);
+        var result = _mapper.Map<List<UserResponse>>(users);
 
         return result;
     }

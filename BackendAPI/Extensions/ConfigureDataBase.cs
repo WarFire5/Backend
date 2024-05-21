@@ -1,21 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Core.Enums;
 using Backend.DataLayer;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Backend.Core.Enums;
 
 namespace Backend.API.Extensions;
 
 public static class DataBaseExtensions
 {
-    //public static void ConfigureDataBase(this IServiceCollection services, ConfigurationManager configurationManager)
-    //{
-    //    services.AddDbContext<MainerWomanContext>(
-    //        options => options
-    //        .UseNpgsql(configurationManager.GetConnectionString("MwConnection"))
-    //        .UseSnakeCaseNamingConvention()
-    //    );
-    //}
-
     public static void ConfigureDataBase(this IServiceCollection services, ConfigurationManager configurationManager)
     {
         var connectionString = configurationManager.GetConnectionString("MwConnection");
@@ -29,12 +20,12 @@ public static class DataBaseExtensions
                 .UseSnakeCaseNamingConvention()
         );
 
-        NpgsqlConnection.GlobalTypeMapper.MapEnum<CoinType>(); 
-        NpgsqlConnection.GlobalTypeMapper.MapEnum<DeviceType>(); 
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<CoinType>();
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<DeviceType>();
     }
 
 
-public static async Task MigrateAndReloadPostgresTypesAsync(this IServiceProvider serviceProvider, CancellationToken token = default)
+    public static async Task MigrateAndReloadPostgresTypesAsync(this IServiceProvider serviceProvider, CancellationToken token = default)
     {
         using (var scope = serviceProvider.CreateScope())
         {

@@ -19,7 +19,7 @@ public class DevicesController : Controller
 {
     private readonly IDevicesService _devicesService;
     private readonly ICoinsService _coinsService;
-    private readonly Serilog.ILogger _logger = Log.ForContext<UsersController>();
+    private readonly Serilog.ILogger _logger = Log.ForContext<DevicesController>();
 
     public DevicesController(IDevicesService devicesService, ICoinsService coinsService)
     {

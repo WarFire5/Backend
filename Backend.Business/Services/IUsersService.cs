@@ -1,5 +1,4 @@
 ﻿using Backend.Core.DTOs;
-using Backend.Core.Models.Devices.Responses;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
 

@@ -1,7 +1,6 @@
 using AutoMapper;
 using Backend.Business.Services;
 using Backend.Core.DTOs;
-using Backend.Core.Exceptions;
 using Backend.Core.Models.Users;
 using Backend.Core.Models.Users.Requests;
 using Backend.Core.Models.Users.Responses;
@@ -14,14 +13,14 @@ using ValidationException = Backend.Core.Exceptions.ValidationException;
 
 namespace Backend.Business.Tests.Services;
 
-public class UsersServiceTest
+public class UsersServiceTests
 {
     private const string _guidPattern = "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$";
     private readonly Mock<IUsersRepository> _usersRepositoryMock;
     private readonly IMapper _mapper;
     private readonly IValidator<AddUserRequest> _addUserValidator;
 
-    public UsersServiceTest()
+    public UsersServiceTests()
     {
         _usersRepositoryMock = new Mock<IUsersRepository>();
         var mapperConfiguration = new MapperConfiguration(cfg => { cfg.AddProfile<UsersMappingProfile>(); });
